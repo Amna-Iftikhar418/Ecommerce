@@ -101,39 +101,60 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
           />
 
           {/* Main image card */}
-          <FadeUp delay={0.2}>
-            <div className="relative aspect-4/5 overflow-hidden rounded-[2rem] rotate-2 shadow-2xl ring-1 ring-primary-foreground/10">
+          <motion.div
+            initial={{
+              opacity: 0,
+              x: -100,
+              y: -90,
+              rotateX: 40,
+              rotateY: -40,
+              rotateZ: -12,
+              scale: 0.85,
+            }}
+            whileInView={{
+              opacity: 1,
+              x: 0,
+              y: 0,
+              rotateX: 0,
+              rotateY: 0,
+              rotateZ: 2,
+              scale: 1,
+            }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: [0.21, 0.47, 0.32, 0.98], delay: 0.2 }}
+            style={{ transformPerspective: 1200 }}
+            className="relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-primary-foreground/10"
+          >
+            <Image
+              src="/home.png"
+              alt=""
+              fill
+              priority
+              className="object-cover"
+            />
+            {featuredItem?.image && (
               <Image
-                src="/home.png"
-                alt=""
+                src={featuredItem.image}
+                alt={featuredItem.name}
                 fill
-                priority
                 className="object-cover"
               />
-              {featuredItem?.image && (
-                <Image
-                  src={featuredItem.image}
-                  alt={featuredItem.name}
-                  fill
-                  className="object-cover"
-                />
-              )}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent" />
+            )}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent" />
 
-              {/* Chef's special badge */}
-              <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full border border-white/20 bg-card/85 px-3 py-1.5 text-card-foreground shadow-lg backdrop-blur-xl">
-                <Sparkles className="h-4 w-4 text-accent" />
-                <span className="font-heading text-xs font-semibold tracking-wide">
-                  Chef&apos;s Special
-                </span>
-              </div>
-
-              {/* Centered food icon */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <ChefHat className="h-24 w-24 fill-primary text-primary drop-shadow-lg sm:h-32 sm:w-32" />
-              </div>
+            {/* Chef's special badge */}
+            <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full border border-white/20 bg-card/85 px-3 py-1.5 text-card-foreground shadow-lg backdrop-blur-xl">
+              <Sparkles className="h-4 w-4 text-accent" />
+              <span className="font-heading text-xs font-semibold tracking-wide">
+                Chef&apos;s Special
+              </span>
             </div>
-          </FadeUp>
+
+            {/* Centered food icon */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <ChefHat className="h-24 w-24 fill-primary text-primary drop-shadow-lg sm:h-32 sm:w-32" />
+            </div>
+          </motion.div>
 
           {/* Secondary thumbnail */}
           {secondaryItem?.image && (
