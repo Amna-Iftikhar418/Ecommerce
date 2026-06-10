@@ -1,7 +1,7 @@
+import CartPageClient from "@/components/cart/CartPageClient";
+
+export const metadata = { title: "Your Cart | Bella Cucina" };
+
 export default function CartPage() {
-  return (
-    <main className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold">Your Cart</h1>
-    </main>
-  );
+  return <CartPageClient />;
 }

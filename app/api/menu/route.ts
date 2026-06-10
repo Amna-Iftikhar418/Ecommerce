@@ -26,16 +26,3 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(items);
 }
 
-export async function POST(req: NextRequest) {
-  const data = await req.json() as {
-    name: string;
-    description: string;
-    price: number;
-    image?: string;
-    slug: string;
-    categoryId: string;
-  };
-
-  const item = await db.menuItem.create({ data });
-  return NextResponse.json(item, { status: 201 });
-}

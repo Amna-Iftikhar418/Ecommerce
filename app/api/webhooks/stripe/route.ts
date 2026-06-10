@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
+import { sendOrderConfirmationEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -23,24 +24,45 @@ export async function POST(req: NextRequest) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    const metadata = session.metadata as {
-      userId: string;
-      address: string;
-      items: string;
+    const { orderId } = session.metadata as { orderId: string; userId: string };
+
+    const paymentIntentId =
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : session.payment_intent?.id ?? null;
+
+    // Update order with payment ID
+    const order = await db.order.update({
+      where: { id: orderId },
+      data: { paymentId: paymentIntentId },
+      include: { items: { include: { menuItem: true } }, user: true },
+    });
+
+    // Send confirmation email
+    const customerEmail =
+      session.customer_details?.email ?? order.user.email;
+    const customerName =
+      session.customer_details?.name ?? order.user.name ?? "Customer";
+    const address = order.address as {
+      line1: string;
+      line2?: string;
+      city: string;
+      state: string;
+      zip: string;
     };
 
-    await db.order.create({
-      data: {
-        userId: metadata.userId,
-        status: "PENDING",
-        total: (session.amount_total ?? 0) / 100,
-        address: JSON.parse(metadata.address),
-        paymentId: session.payment_intent as string,
-        items: {
-          create: JSON.parse(metadata.items),
-        },
-      },
-    });
+    await sendOrderConfirmationEmail({
+      to: customerEmail,
+      customerName,
+      orderId: order.id,
+      items: order.items.map((i) => ({
+        name: i.menuItem.name,
+        quantity: i.quantity,
+        price: i.price,
+      })),
+      total: order.total,
+      address,
+    }).catch(console.error); // don't fail the webhook if email fails
   }
 
   return NextResponse.json({ received: true });

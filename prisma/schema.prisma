@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -111,4 +110,18 @@ model Review {
   rating     Int
   comment    String?
   createdAt  DateTime @default(now())
+}
+
+model Settings {
+  id                String  @id @default("singleton")
+  restaurantName    String  @default("Bella Cucina")
+  restaurantPhone   String  @default("")
+  restaurantEmail   String  @default("")
+  deliveryRadius    Float   @default(10)
+  minimumOrder      Float   @default(15)
+  deliveryFee       Float   @default(3.99)
+  estimatedDelivery Int     @default(30)
+  openingTime       String  @default("11:00")
+  closingTime       String  @default("22:00")
+  isOpen            Boolean @default(true)
 }
