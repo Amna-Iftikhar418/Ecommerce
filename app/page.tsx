@@ -23,11 +23,12 @@ export default async function HomePage() {
       where: { isAvailable: true, rating: { gte: 4.5 } },
       include: { category: true },
       orderBy: { rating: "desc" },
-      take: 8,
+      take: 9,
     }),
   ]);
 
   const heroItem = featured[0] ?? null;
+  const heroSecondaryItem = featured[8] ?? null;
   const storyItem = featured[1] ?? null;
   const gridItems = featured.slice(2, 8);
 
@@ -38,6 +39,15 @@ export default async function HomePage() {
         featuredItem={
           heroItem
             ? { name: heroItem.name, image: heroItem.image, rating: heroItem.rating }
+            : null
+        }
+        secondaryItem={
+          heroSecondaryItem
+            ? {
+                name: heroSecondaryItem.name,
+                image: heroSecondaryItem.image,
+                rating: heroSecondaryItem.rating,
+              }
             : null
         }
       />

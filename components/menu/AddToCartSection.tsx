@@ -94,8 +94,8 @@ export default function AddToCartSection({ item, options }: Props) {
                     }
                     className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
                       isSelected
-                        ? "border-orange-500 bg-orange-50 text-orange-700 font-medium"
-                        : "border-border hover:border-orange-300 text-foreground"
+                        ? "border-accent bg-accent/10 text-foreground font-medium"
+                        : "border-border hover:border-accent/50 text-foreground"
                     }`}
                   >
                     {choice.label}
@@ -135,7 +135,7 @@ export default function AddToCartSection({ item, options }: Props) {
       <Button
         onClick={handleAdd}
         disabled={!item.isAvailable}
-        className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+        className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
         size="lg"
       >
         <ShoppingCart className="mr-2 h-5 w-5" />

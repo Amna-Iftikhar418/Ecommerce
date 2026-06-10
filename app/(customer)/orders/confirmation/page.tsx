@@ -15,8 +15,8 @@ export default async function ConfirmationPage({ searchParams }: Props) {
   if (!session_id) {
     return (
       <main className="container mx-auto py-16 px-4 text-center">
-        <h1 className="text-2xl font-bold mb-2">Invalid confirmation link</h1>
-        <Link href="/" className="text-orange-500 hover:underline">
+        <h1 className="font-heading text-2xl font-bold mb-2">Invalid confirmation link</h1>
+        <Link href="/" className="text-accent hover:underline">
           Go home
         </Link>
       </main>
@@ -29,8 +29,8 @@ export default async function ConfirmationPage({ searchParams }: Props) {
   } catch {
     return (
       <main className="container mx-auto py-16 px-4 text-center">
-        <h1 className="text-2xl font-bold mb-2">Session not found</h1>
-        <Link href="/" className="text-orange-500 hover:underline">
+        <h1 className="font-heading text-2xl font-bold mb-2">Session not found</h1>
+        <Link href="/" className="text-accent hover:underline">
           Go home
         </Link>
       </main>
@@ -40,8 +40,8 @@ export default async function ConfirmationPage({ searchParams }: Props) {
   if (session.status !== "complete") {
     return (
       <main className="container mx-auto py-16 px-4 text-center">
-        <h1 className="text-2xl font-bold mb-2">Payment not completed</h1>
-        <Link href="/checkout" className="text-orange-500 hover:underline">
+        <h1 className="font-heading text-2xl font-bold mb-2">Payment not completed</h1>
+        <Link href="/checkout" className="text-accent hover:underline">
           Return to checkout
         </Link>
       </main>

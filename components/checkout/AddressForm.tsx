@@ -132,7 +132,7 @@ export default function AddressForm({ onSubmit, loading, error }: Props) {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+        className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
         size="lg"
       >
         {loading ? "Loading…" : "Continue to Payment"}

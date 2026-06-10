@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore, type CartItem as CartItemType } from "@/store/cartStore";
 
@@ -15,7 +15,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
 
   return (
     <div className="flex gap-4 py-4 border-b last:border-0">
-      <div className="relative h-20 w-20 flex-shrink-0 rounded-xl overflow-hidden bg-orange-50">
+      <div className="relative h-20 w-20 flex-shrink-0 rounded-xl overflow-hidden bg-muted">
         {item.image ? (
           <Image
             src={item.image}
@@ -24,8 +24,8 @@ export default function CartItem({ item }: { item: CartItemType }) {
             className="object-cover"
           />
         ) : (
-          <div className="h-full w-full flex items-center justify-center text-3xl select-none">
-            🍽️
+          <div className="flex h-full w-full items-center justify-center text-muted-foreground/40">
+            <UtensilsCrossed className="h-8 w-8" />
           </div>
         )}
       </div>
@@ -37,7 +37,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
             {item.options.map((o) => `${o.name}: ${o.choice}`).join(", ")}
           </p>
         )}
-        <p className="text-sm text-orange-500 font-medium mt-0.5">
+        <p className="text-sm text-primary font-medium mt-0.5">
           ${unitPrice.toFixed(2)} each
         </p>
 

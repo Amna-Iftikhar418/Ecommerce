@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { TriangleAlert } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -17,8 +18,10 @@ export default function GlobalError({ error, reset }: Props) {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
-      <span className="text-5xl mb-4">⚠️</span>
-      <h2 className="text-2xl font-bold mb-2">Something went wrong</h2>
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10 text-accent">
+        <TriangleAlert className="h-8 w-8" />
+      </div>
+      <h2 className="font-heading text-2xl font-bold mb-2">Something went wrong</h2>
       <p className="text-sm text-muted-foreground mb-8 max-w-xs">
         An unexpected error occurred. Please try again or return to the menu.
       </p>
@@ -33,7 +36,7 @@ export default function GlobalError({ error, reset }: Props) {
           href="/menu"
           className={cn(
             buttonVariants(),
-            "bg-orange-500 hover:bg-orange-600 text-white"
+            "bg-accent text-accent-foreground hover:bg-accent/90"
           )}
         >
           Back to Menu

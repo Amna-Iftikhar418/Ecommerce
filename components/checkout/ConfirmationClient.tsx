@@ -30,12 +30,14 @@ export default function ConfirmationClient({
   const orderRef = orderId ? `#${orderId.slice(-8).toUpperCase()}` : "";
 
   return (
-    <main className="container mx-auto py-16 px-4 max-w-lg">
+    <main className="container mx-auto max-w-lg px-4 py-16 sm:py-20">
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
-          <CheckCircle className="h-16 w-16 text-green-500" />
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+            <CheckCircle className="h-10 w-10 text-green-600" />
+          </div>
         </div>
-        <h1 className="text-3xl font-bold mb-2">Order Confirmed!</h1>
+        <h1 className="font-heading text-3xl font-bold mb-2">Order Confirmed!</h1>
         {orderRef && (
           <p className="text-muted-foreground">
             Order{" "}
@@ -52,8 +54,8 @@ export default function ConfirmationClient({
       </div>
 
       {orderItems.length > 0 && (
-        <div className="bg-white border rounded-2xl p-6 mb-6">
-          <h2 className="font-semibold mb-4">Order Summary</h2>
+        <div className="rounded-2xl border border-border bg-card p-6 mb-6 shadow-sm">
+          <h2 className="font-heading font-semibold mb-4">Order Summary</h2>
           <div className="space-y-2">
             {orderItems.map((item, i) => (
               <div key={i} className="flex justify-between text-sm">
@@ -72,7 +74,7 @@ export default function ConfirmationClient({
         </div>
       )}
 
-      <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-6 text-sm text-orange-700 text-center">
+      <div className="rounded-2xl border border-accent/20 bg-accent/10 p-4 mb-6 text-center text-sm text-foreground">
         We&apos;re preparing your order now. Estimated delivery: 30–45 minutes.
       </div>
 
@@ -89,7 +91,7 @@ export default function ConfirmationClient({
           href="/menu"
           className={cn(
             buttonVariants({ variant: "default" }),
-            "flex-1 bg-orange-500 hover:bg-orange-600 text-white"
+            "flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
           )}
         >
           Order Again

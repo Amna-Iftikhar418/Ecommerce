@@ -77,7 +77,7 @@ export default function CheckoutClient() {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-6">Delivery Address</h2>
+      <h2 className="font-heading text-xl font-semibold mb-6">Delivery Address</h2>
       <AddressForm
         onSubmit={fetchClientSecret}
         loading={loading}

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, ChevronLeft } from "lucide-react";
+import { Star, ChevronLeft, UtensilsCrossed } from "lucide-react";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
 import AddToCartSection from "@/components/menu/AddToCartSection";
@@ -28,18 +28,18 @@ export default async function DishDetailPage({ params }: Props) {
   if (!item) notFound();
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-4xl">
+    <div className="container mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <Link
         href="/menu"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
+        className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-accent mb-6 transition-colors"
       >
         <ChevronLeft className="h-4 w-4" />
         Back to Menu
       </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-14">
         {/* Image */}
-        <div className="relative h-72 md:h-full min-h-72 rounded-2xl overflow-hidden bg-orange-50">
+        <div className="relative aspect-square md:aspect-auto md:h-full min-h-72 overflow-hidden rounded-3xl bg-muted shadow-xl">
           {item.image ? (
             <Image
               src={item.image}
@@ -49,24 +49,26 @@ export default async function DishDetailPage({ params }: Props) {
               priority
             />
           ) : (
-            <div className="h-full w-full flex items-center justify-center text-8xl select-none">
-              🍽️
+            <div className="flex h-full w-full items-center justify-center text-muted-foreground/40">
+              <UtensilsCrossed className="h-24 w-24" />
             </div>
           )}
         </div>
 
         {/* Details */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-5">
           <div>
-            <Badge variant="outline" className="mb-2">
+            <Badge variant="outline" className="mb-3">
               {item.category.name}
             </Badge>
-            <h1 className="text-3xl font-bold">{item.name}</h1>
+            <h1 className="font-heading text-3xl font-bold sm:text-4xl">
+              {item.name}
+            </h1>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-4 w-4 fill-accent text-accent" />
               <span className="text-sm font-semibold">
                 {item.rating.toFixed(1)}
               </span>
@@ -78,7 +80,7 @@ export default async function DishDetailPage({ params }: Props) {
             {item.description}
           </p>
 
-          <div className="text-2xl font-bold text-orange-500">
+          <div className="font-heading text-3xl font-bold text-primary">
             ${item.price.toFixed(2)}
           </div>
 

@@ -2,18 +2,27 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown, Sparkles, Star, UtensilsCrossed } from "lucide-react";
+import { ChevronDown, Clock, Sparkles, Star, UtensilsCrossed } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import FadeUp from "@/components/motion/FadeUp";
 import MagneticButton from "@/components/motion/MagneticButton";
 import ParallaxElement from "@/components/motion/ParallaxElement";
 
+type HeroItem = { name: string; image: string | null; rating: number } | null;
+
 type HeroSectionProps = {
-  featuredItem: { name: string; image: string | null; rating: number } | null;
+  featuredItem: HeroItem;
+  secondaryItem: HeroItem;
 };
 
-export default function HeroSection({ featuredItem }: HeroSectionProps) {
+const STATS = [
+  { value: "10+", label: "Years of Tradition" },
+  { value: "4.9★", label: "Average Rating" },
+  { value: "25-35", label: "Min Delivery" },
+];
+
+export default function HeroSection({ featuredItem, secondaryItem }: HeroSectionProps) {
   return (
     <section className="relative min-h-screen overflow-hidden bg-primary text-primary-foreground">
       <ParallaxElement
@@ -29,7 +38,7 @@ export default function HeroSection({ featuredItem }: HeroSectionProps) {
         <></>
       </ParallaxElement>
 
-      <div className="container relative mx-auto grid min-h-screen grid-cols-1 items-center gap-12 px-4 pt-28 pb-16 lg:grid-cols-2 lg:gap-16">
+      <div className="container relative mx-auto grid min-h-screen grid-cols-1 items-center gap-16 px-4 pt-28 pb-20 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:pb-16">
         {/* Copy */}
         <div>
           <FadeUp>
@@ -74,12 +83,40 @@ export default function HeroSection({ featuredItem }: HeroSectionProps) {
               </MagneticButton>
             </div>
           </FadeUp>
+
+          {/* Stats strip */}
+          <FadeUp delay={0.45}>
+            <div className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-6 border-t border-primary-foreground/10 pt-8">
+              {STATS.map((stat) => (
+                <div key={stat.label}>
+                  <p className="font-heading text-2xl font-bold sm:text-3xl">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1 text-xs text-primary-foreground/60 sm:text-sm">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </FadeUp>
         </div>
 
         {/* Visual */}
-        <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+        <div className="relative mx-auto mt-12 w-full max-w-md lg:mt-0 lg:max-w-none">
+          {/* Decorative dot grid */}
+          <div
+            aria-hidden
+            className="absolute -top-10 -right-6 -z-10 hidden h-32 w-32 opacity-20 sm:block lg:-right-10"
+            style={{
+              backgroundImage:
+                "radial-gradient(var(--primary-foreground) 1.5px, transparent 1.5px)",
+              backgroundSize: "16px 16px",
+            }}
+          />
+
+          {/* Main image card */}
           <FadeUp delay={0.2}>
-            <div className="relative aspect-4/5 overflow-hidden rounded-3xl rotate-2 shadow-2xl">
+            <div className="relative aspect-4/5 overflow-hidden rounded-[2rem] rotate-2 shadow-2xl ring-1 ring-primary-foreground/10">
               {featuredItem?.image ? (
                 <Image
                   src={featuredItem.image}
@@ -94,11 +131,47 @@ export default function HeroSection({ featuredItem }: HeroSectionProps) {
                   <Sparkles className="h-8 w-8" />
                 </div>
               )}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
             </div>
           </FadeUp>
 
+          {/* Secondary thumbnail */}
+          {secondaryItem?.image && (
+            <FadeUp
+              delay={0.35}
+              className="absolute -top-8 -left-4 hidden sm:block sm:-left-10"
+            >
+              <div className="relative h-24 w-24 -rotate-6 overflow-hidden rounded-2xl shadow-xl ring-4 ring-primary sm:h-32 sm:w-32">
+                <Image
+                  src={secondaryItem.image}
+                  alt={secondaryItem.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </FadeUp>
+          )}
+
+          {/* Delivery badge */}
+          <FadeUp delay={0.6} className="absolute -top-5 -right-2 sm:-right-6">
+            <div className="flex items-center gap-3 rounded-2xl bg-card text-card-foreground shadow-xl px-4 py-3 sm:px-5 sm:py-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+                <Clock className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-heading font-semibold text-sm leading-none">
+                  25-35 min
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Avg. Delivery
+                </p>
+              </div>
+            </div>
+          </FadeUp>
+
+          {/* Rating badge */}
           {featuredItem && (
-            <FadeUp delay={0.5} className="absolute -bottom-6 -left-6 sm:-left-10">
+            <FadeUp delay={0.5} className="absolute -bottom-6 -left-4 sm:-left-10">
               <div className="flex items-center gap-3 rounded-2xl bg-card text-card-foreground shadow-xl px-5 py-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent">
                   <Star className="h-5 w-5 fill-accent text-accent" />

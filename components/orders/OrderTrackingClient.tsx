@@ -6,6 +6,7 @@ import { CheckCircle, Circle, Package, ChefHat, Truck, MapPin } from "lucide-rea
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import PageHeader from "@/components/PageHeader";
 import OrderStatusBadge from "./OrderStatusBadge";
 
 type OrderStatus = "PENDING" | "PREPARING" | "ON_THE_WAY" | "DELIVERED" | "CANCELLED";
@@ -64,138 +65,132 @@ export default function OrderTrackingClient({ initialOrder }: { initialOrder: Tr
   });
 
   return (
-    <main className="container mx-auto py-8 px-4 max-w-2xl">
-      <div className="mb-6">
-        <Link
-          href="/orders"
-          className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "-ml-2 mb-4 text-muted-foreground")}
-        >
-          ← Back to Orders
-        </Link>
-        <div className="flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <h1 className="text-2xl font-bold">Order {orderRef}</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{createdAt}</p>
-          </div>
-          <OrderStatusBadge status={order.status} />
-        </div>
-      </div>
+    <div>
+      <PageHeader
+        backHref="/orders"
+        backLabel="Back to Orders"
+        title={`Order ${orderRef}`}
+        description={createdAt}
+        action={<OrderStatusBadge status={order.status} />}
+      />
 
-      {/* Status Timeline */}
-      <div className="bg-white border rounded-2xl p-6 mb-4">
-        {isCancelled ? (
-          <div className="flex items-center gap-3 text-red-600">
-            <Circle className="h-8 w-8 fill-red-100 stroke-red-400" />
-            <div>
-              <p className="font-semibold">Order Cancelled</p>
-              <p className="text-sm text-red-500">This order was cancelled.</p>
+      <main className="container mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        {/* Status Timeline */}
+        <div className="rounded-2xl border border-border bg-card p-6 mb-4 shadow-sm">
+          {isCancelled ? (
+            <div className="flex items-center gap-3 text-red-600">
+              <Circle className="h-8 w-8 fill-red-100 stroke-red-400" />
+              <div>
+                <p className="font-semibold">Order Cancelled</p>
+                <p className="text-sm text-red-500">This order was cancelled.</p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="relative">
-            {/* connector line */}
-            <div className="absolute top-5 left-5 right-5 h-0.5 bg-gray-200" aria-hidden />
-            <div
-              className="absolute top-5 left-5 h-0.5 bg-orange-400 transition-all duration-700"
-              style={{ width: currentStep === 0 ? 0 : `${(currentStep / 3) * (100 - (10 / STEPS.length))}%` }}
-              aria-hidden
-            />
+          ) : (
+            <div className="relative">
+              {/* connector line */}
+              <div className="absolute top-5 left-5 right-5 h-0.5 bg-border" aria-hidden />
+              <div
+                className="absolute top-5 left-5 h-0.5 bg-accent transition-all duration-700"
+                style={{ width: currentStep === 0 ? 0 : `${(currentStep / 3) * (100 - (10 / STEPS.length))}%` }}
+                aria-hidden
+              />
 
-            <ol className="relative flex justify-between">
-              {STEPS.map((step, i) => {
-                const done = i < currentStep;
-                const active = i === currentStep;
-                const { Icon } = step;
+              <ol className="relative flex justify-between">
+                {STEPS.map((step, i) => {
+                  const done = i < currentStep;
+                  const active = i === currentStep;
+                  const { Icon } = step;
 
-                return (
-                  <li key={step.status} className="flex flex-col items-center gap-2 flex-1">
-                    <div
-                      className={cn(
-                        "relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors",
-                        done  && "border-orange-500 bg-orange-500 text-white",
-                        active && "border-orange-500 bg-white text-orange-500",
-                        !done && !active && "border-gray-200 bg-white text-gray-300"
-                      )}
-                    >
-                      {done ? (
-                        <CheckCircle className="h-5 w-5" />
-                      ) : (
-                        <Icon className="h-5 w-5" />
-                      )}
-                    </div>
-                    <div className="text-center hidden sm:block">
-                      <p className={cn("text-xs font-medium leading-tight", active ? "text-orange-600" : done ? "text-foreground" : "text-muted-foreground")}>
-                        {step.label}
-                      </p>
-                      {active && (
-                        <p className="text-xs text-muted-foreground mt-0.5">{step.sublabel}</p>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
+                  return (
+                    <li key={step.status} className="flex flex-col items-center gap-2 flex-1">
+                      <div
+                        className={cn(
+                          "relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors",
+                          done  && "border-accent bg-accent text-accent-foreground",
+                          active && "border-accent bg-card text-accent",
+                          !done && !active && "border-border bg-card text-muted-foreground/40"
+                        )}
+                      >
+                        {done ? (
+                          <CheckCircle className="h-5 w-5" />
+                        ) : (
+                          <Icon className="h-5 w-5" />
+                        )}
+                      </div>
+                      <div className="text-center hidden sm:block">
+                        <p className={cn("text-xs font-medium leading-tight", active ? "text-accent" : done ? "text-foreground" : "text-muted-foreground")}>
+                          {step.label}
+                        </p>
+                        {active && (
+                          <p className="text-xs text-muted-foreground mt-0.5">{step.sublabel}</p>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
 
-            {/* mobile active step label */}
-            <p className="sm:hidden text-sm font-medium text-orange-600 text-center mt-4">
-              {STEPS[currentStep]?.label} — {STEPS[currentStep]?.sublabel}
-            </p>
-          </div>
-        )}
-
-        {order.status !== "DELIVERED" && order.status !== "CANCELLED" && (
-          <p className="text-xs text-muted-foreground text-center mt-4">
-            Status updates automatically every 10 seconds
-          </p>
-        )}
-      </div>
-
-      {/* Delivery Address */}
-      <div className="bg-white border rounded-2xl p-6 mb-4">
-        <div className="flex items-center gap-2 mb-3">
-          <MapPin className="h-4 w-4 text-orange-500" />
-          <h2 className="font-semibold">Delivery Address</h2>
-        </div>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          {order.address.line1}
-          {order.address.line2 && `, ${order.address.line2}`}
-          <br />
-          {order.address.city}, {order.address.state} {order.address.zip}
-          <br />
-          {order.address.country}
-        </p>
-      </div>
-
-      {/* Order Items */}
-      <div className="bg-white border rounded-2xl p-6">
-        <h2 className="font-semibold mb-4">Order Items</h2>
-        <div className="space-y-3">
-          {order.items.map((item) => (
-            <div key={item.id} className="flex justify-between items-center text-sm">
-              <span>
-                <span className="font-medium">{item.quantity}×</span>{" "}
-                {item.menuItem.name}
-              </span>
-              <span className="text-muted-foreground">${(item.price * item.quantity).toFixed(2)}</span>
+              {/* mobile active step label */}
+              <p className="sm:hidden text-sm font-medium text-accent text-center mt-4">
+                {STEPS[currentStep]?.label} — {STEPS[currentStep]?.sublabel}
+              </p>
             </div>
-          ))}
-        </div>
-        <Separator className="my-4" />
-        <div className="flex justify-between font-bold">
-          <span>Total</span>
-          <span>${order.total.toFixed(2)}</span>
-        </div>
-
-        <Link
-          href="/menu"
-          className={cn(
-            buttonVariants({ size: "sm", variant: "outline" }),
-            "w-full mt-4"
           )}
-        >
-          Order Again
-        </Link>
-      </div>
-    </main>
+
+          {order.status !== "DELIVERED" && order.status !== "CANCELLED" && (
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              Status updates automatically every 10 seconds
+            </p>
+          )}
+        </div>
+
+        {/* Delivery Address */}
+        <div className="rounded-2xl border border-border bg-card p-6 mb-4 shadow-sm">
+          <div className="flex items-center gap-2 mb-3">
+            <MapPin className="h-4 w-4 text-accent" />
+            <h2 className="font-heading font-semibold">Delivery Address</h2>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {order.address.line1}
+            {order.address.line2 && `, ${order.address.line2}`}
+            <br />
+            {order.address.city}, {order.address.state} {order.address.zip}
+            <br />
+            {order.address.country}
+          </p>
+        </div>
+
+        {/* Order Items */}
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <h2 className="font-heading font-semibold mb-4">Order Items</h2>
+          <div className="space-y-3">
+            {order.items.map((item) => (
+              <div key={item.id} className="flex justify-between items-center text-sm">
+                <span>
+                  <span className="font-medium">{item.quantity}×</span>{" "}
+                  {item.menuItem.name}
+                </span>
+                <span className="text-muted-foreground">${(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+          <Separator className="my-4" />
+          <div className="flex justify-between font-bold">
+            <span>Total</span>
+            <span>${order.total.toFixed(2)}</span>
+          </div>
+
+          <Link
+            href="/menu"
+            className={cn(
+              buttonVariants({ size: "sm", variant: "outline" }),
+              "w-full mt-4"
+            )}
+          >
+            Order Again
+          </Link>
+        </div>
+      </main>
+    </div>
   );
 }
