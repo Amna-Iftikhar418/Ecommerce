@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ChefHat, ChevronDown, Clock, Sparkles, Star, UtensilsCrossed } from "lucide-react";
+import { motion } from "framer-motion";
+import { ChefHat, ChevronDown, Clock, Sparkles, Star } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import FadeUp from "@/components/motion/FadeUp";
@@ -24,6 +25,7 @@ const STATS = [
 
 export default function HeroSection({ featuredItem, secondaryItem }: HeroSectionProps) {
   return (
+    <>
     <section className="relative min-h-screen overflow-hidden bg-primary text-primary-foreground">
       <ParallaxElement
         speed={1.5}
@@ -83,26 +85,10 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
               </MagneticButton>
             </div>
           </FadeUp>
-
-          {/* Stats strip */}
-          <FadeUp delay={0.45}>
-            <div className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-6 border-t border-primary-foreground/10 pt-8">
-              {STATS.map((stat) => (
-                <div key={stat.label}>
-                  <p className="font-heading text-2xl font-bold sm:text-3xl">
-                    {stat.value}
-                  </p>
-                  <p className="mt-1 text-xs text-primary-foreground/60 sm:text-sm">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </FadeUp>
         </div>
 
         {/* Visual */}
-        <div className="relative mx-auto mt-12 w-full max-w-md lg:mt-0 lg:max-w-none">
+        <div className="relative mx-auto mt-12 w-full max-w-sm lg:mt-0 lg:max-w-md">
           {/* Decorative dot grid */}
           <div
             aria-hidden
@@ -132,12 +118,14 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
                   className="object-cover"
                 />
               )}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent" />
 
-              {/* Icon accent badge */}
-              <div className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-accent/90 px-3 py-2 text-primary shadow-lg backdrop-blur-sm">
-                <UtensilsCrossed className="h-6 w-6" />
-                <Sparkles className="h-5 w-5" />
+              {/* Chef's special badge */}
+              <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full border border-white/20 bg-card/85 px-3 py-1.5 text-card-foreground shadow-lg backdrop-blur-xl">
+                <Sparkles className="h-4 w-4 text-accent" />
+                <span className="font-heading text-xs font-semibold tracking-wide">
+                  Chef&apos;s Special
+                </span>
               </div>
 
               {/* Centered food icon */}
@@ -151,9 +139,9 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
           {secondaryItem?.image && (
             <FadeUp
               delay={0.35}
-              className="absolute -top-8 -left-4 hidden sm:block sm:-left-10"
+              className="absolute -top-6 -left-3 hidden sm:block sm:-left-8"
             >
-              <div className="relative h-24 w-24 -rotate-6 overflow-hidden rounded-2xl shadow-xl ring-4 ring-primary sm:h-32 sm:w-32">
+              <div className="relative h-20 w-20 -rotate-6 overflow-hidden rounded-2xl shadow-xl ring-4 ring-primary sm:h-28 sm:w-28">
                 <Image
                   src={secondaryItem.image}
                   alt={secondaryItem.name}
@@ -165,38 +153,65 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
           )}
 
           {/* Delivery badge */}
-          <FadeUp delay={0.6} className="absolute -top-5 -right-2 sm:-right-6">
-            <div className="flex items-center gap-3 rounded-2xl bg-card text-card-foreground shadow-xl px-4 py-3 sm:px-5 sm:py-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
-                <Clock className="h-5 w-5" />
+          <FadeUp delay={0.6} className="absolute -top-4 -right-2 z-10 sm:-right-4">
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="flex items-center gap-2.5 rounded-2xl border border-border/60 bg-card/85 px-3.5 py-2.5 text-card-foreground shadow-2xl shadow-primary/15 backdrop-blur-xl sm:px-4 sm:py-3"
+            >
+              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-accent/70 text-accent-foreground shadow-md shadow-accent/40">
+                <Clock className="h-4 w-4" />
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-card" />
+                </span>
               </div>
               <div>
-                <p className="font-heading font-semibold text-sm leading-none">
+                <p className="font-heading font-bold text-sm leading-none">
                   25-35 min
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="mt-1.5 text-xs text-muted-foreground">
                   Avg. Delivery
                 </p>
               </div>
-            </div>
+            </motion.div>
           </FadeUp>
 
           {/* Rating badge */}
           {featuredItem && (
-            <FadeUp delay={0.5} className="absolute -bottom-6 -left-4 sm:-left-10">
-              <div className="flex items-center gap-3 rounded-2xl bg-card text-card-foreground shadow-xl px-5 py-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent">
-                  <Star className="h-5 w-5 fill-accent text-accent" />
+            <FadeUp delay={0.5} className="absolute -bottom-4 -left-3 z-10 sm:-left-8">
+              <motion.div
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+                className="flex items-center gap-2.5 rounded-2xl border border-border/60 bg-card/85 px-4 py-3 text-card-foreground shadow-2xl shadow-primary/15 backdrop-blur-xl"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-accent/70 text-accent-foreground shadow-md shadow-accent/40">
+                  <Star className="h-4 w-4 fill-current" />
                 </div>
                 <div>
-                  <p className="font-heading font-semibold text-sm leading-none">
-                    {featuredItem.rating.toFixed(1)} Rating
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-heading font-bold text-sm leading-none">
+                      {featuredItem.rating.toFixed(1)}
+                    </p>
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={cn(
+                            "h-3 w-3",
+                            i < Math.round(featuredItem.rating)
+                              ? "fill-accent text-accent"
+                              : "fill-muted text-muted"
+                          )}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="mt-1.5 max-w-[140px] truncate text-xs text-muted-foreground">
                     {featuredItem.name}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </FadeUp>
           )}
         </div>
@@ -206,5 +221,26 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
         <ChevronDown className="h-6 w-6" />
       </div>
     </section>
+
+    {/* Stats strip - revealed on scroll */}
+    <section className="relative bg-primary text-primary-foreground border-t border-primary-foreground/10">
+      <div className="container mx-auto px-4 py-10 sm:px-6 lg:px-8">
+        <FadeUp>
+          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 sm:justify-evenly">
+            {STATS.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="font-heading text-2xl font-bold sm:text-3xl">
+                  {stat.value}
+                </p>
+                <p className="mt-1 text-xs text-primary-foreground/60 sm:text-sm">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </FadeUp>
+      </div>
+    </section>
+    </>
   );
 }
