@@ -220,7 +220,7 @@ export default function MenuClient({
       header: "Item",
       cell: (item: MenuItem) => (
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center">
+          <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden shrink-0 flex items-center justify-center">
             {item.image ? (
               <Image
                 src={item.image}
@@ -230,7 +230,7 @@ export default function MenuClient({
                 className="object-cover w-full h-full"
               />
             ) : (
-              <ImageIcon className="h-4 w-4 text-gray-400" />
+              <ImageIcon className="h-4 w-4 text-muted-foreground" />
             )}
           </div>
           <div className="min-w-0">
@@ -264,7 +264,7 @@ export default function MenuClient({
           className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors ${
             item.isAvailable
               ? "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
-              : "bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200"
+              : "bg-muted text-muted-foreground border-border hover:bg-secondary"
           }`}
         >
           {item.isAvailable ? "Available" : "Unavailable"}
@@ -303,7 +303,7 @@ export default function MenuClient({
         <p className="text-sm text-muted-foreground">{items.length} items</p>
         <Button
           onClick={openAdd}
-          className="bg-orange-500 hover:bg-orange-600 text-white"
+          className="bg-accent text-accent-foreground hover:bg-accent/90"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Item
@@ -426,7 +426,7 @@ export default function MenuClient({
             <div>
               <Label>Image</Label>
               {form.image && (
-                <div className="mt-1 mb-2 relative h-32 w-full rounded-lg overflow-hidden bg-gray-100">
+                <div className="mt-1 mb-2 relative h-32 w-full rounded-lg overflow-hidden bg-muted">
                   <Image
                     src={form.image}
                     alt="Preview"
@@ -460,7 +460,7 @@ export default function MenuClient({
             <Button
               onClick={() => void handleSave()}
               disabled={saving || uploading}
-              className="bg-orange-500 hover:bg-orange-600 text-white"
+              className="bg-accent text-accent-foreground hover:bg-accent/90"
             >
               {saving
                 ? "Saving..."

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { Store, Truck, Clock4 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,8 +58,13 @@ export default function SettingsClient({
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="bg-white border rounded-xl p-6">
-        <h2 className="font-semibold mb-4">Restaurant Info</h2>
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Store className="h-4 w-4" />
+          </span>
+          Restaurant Info
+        </h2>
         <div className="space-y-4">
           <div>
             <Label>Restaurant Name</Label>
@@ -92,8 +98,13 @@ export default function SettingsClient({
         </div>
       </div>
 
-      <div className="bg-white border rounded-xl p-6">
-        <h2 className="font-semibold mb-4">Delivery Settings</h2>
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Truck className="h-4 w-4" />
+          </span>
+          Delivery Settings
+        </h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label>Delivery Radius (miles)</Label>
@@ -143,8 +154,13 @@ export default function SettingsClient({
         </div>
       </div>
 
-      <div className="bg-white border rounded-xl p-6">
-        <h2 className="font-semibold mb-4">Hours &amp; Status</h2>
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Clock4 className="h-4 w-4" />
+          </span>
+          Hours &amp; Status
+        </h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label>Opening Time</Label>
@@ -185,7 +201,7 @@ export default function SettingsClient({
       <Button
         onClick={() => void handleSave()}
         disabled={saving}
-        className="bg-orange-500 hover:bg-orange-600 text-white"
+        className="bg-accent text-accent-foreground hover:bg-accent/90"
       >
         {saving ? "Saving..." : "Save Settings"}
       </Button>

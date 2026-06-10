@@ -141,16 +141,16 @@ export default function OrdersClient({
 
   return (
     <div>
-      <div className="flex gap-2 mb-4 flex-wrap">
+      <div className="mb-5 flex flex-wrap gap-2">
         {(["ALL", ...ALL_STATUSES] as const).map((s) => (
           <button
             key={s}
             onClick={() => setFilter(s)}
             className={cn(
-              "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
+              "rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",
               filter === s
-                ? "bg-orange-500 text-white border-orange-500"
-                : "bg-white text-gray-600 border-gray-200 hover:border-orange-300"
+                ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                : "border-border bg-card text-muted-foreground hover:border-accent hover:text-accent"
             )}
           >
             {s === "ALL" ? "All" : s.replace(/_/g, " ")}

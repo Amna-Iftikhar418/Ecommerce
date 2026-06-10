@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   EmbeddedCheckout,
@@ -44,8 +44,13 @@ export default function CheckoutClient() {
     }
   }, [items]);
 
+  useEffect(() => {
+    if (items.length === 0) {
+      router.replace("/cart");
+    }
+  }, [items, router]);
+
   if (items.length === 0) {
-    router.replace("/cart");
     return null;
   }
 

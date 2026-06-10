@@ -25,10 +25,13 @@ export default async function AdminSettingsPage() {
   });
 
   return (
-    <main className="p-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
+    <main className="p-6 sm:p-8 lg:p-10">
+      <div className="mb-8">
+        <p className="font-heading italic text-accent">Behind the Scenes</p>
+        <h1 className="font-heading text-3xl font-bold sm:text-4xl">
+          Settings
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Manage restaurant info, delivery options, and hours
         </p>
       </div>

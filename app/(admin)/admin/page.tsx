@@ -5,10 +5,14 @@ import {
   Clock,
   UtensilsCrossed,
   Users,
+  ArrowRight,
+  ReceiptText,
 } from "lucide-react";
 import { getAdminUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import OrderStatusBadge from "@/components/orders/OrderStatusBadge";
+import FadeUp from "@/components/motion/FadeUp";
+import { StaggerContainer, StaggerItem } from "@/components/motion/StaggerReveal";
 
 export default async function AdminDashboardPage() {
   await getAdminUser();
@@ -37,107 +41,140 @@ export default async function AdminDashboardPage() {
   ]);
 
   const revenue = revenueAgg._sum.total ?? 0;
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
 
   const stats = [
     {
       label: "Total Orders",
       value: totalOrders,
       Icon: Package,
-      color: "bg-blue-50 text-blue-600",
+      color: "bg-primary/10 text-primary",
     },
     {
       label: "Total Revenue",
       value: `$${revenue.toFixed(2)}`,
       Icon: DollarSign,
-      color: "bg-green-50 text-green-600",
+      color: "bg-accent/15 text-accent",
     },
     {
       label: "Active Orders",
       value: activeCount,
       Icon: Clock,
-      color: "bg-orange-50 text-orange-600",
+      color: "bg-accent/15 text-accent",
+      live: activeCount > 0,
     },
     {
       label: "Menu Items",
       value: menuItemCount,
       Icon: UtensilsCrossed,
-      color: "bg-purple-50 text-purple-600",
+      color: "bg-primary/10 text-primary",
     },
     {
       label: "Customers",
       value: customerCount,
       Icon: Users,
-      color: "bg-pink-50 text-pink-600",
+      color: "bg-primary/10 text-primary",
     },
   ];
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        {stats.map(({ label, value, Icon, color }) => (
-          <div key={label} className="bg-white border rounded-xl p-4">
-            <div
-              className={`w-10 h-10 rounded-lg ${color} flex items-center justify-center mb-3`}
-            >
-              <Icon className="h-5 w-5" />
-            </div>
-            <p className="text-2xl font-bold">{value}</p>
-            <p className="text-sm text-muted-foreground">{label}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="bg-white border rounded-xl overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h2 className="font-semibold">Recent Orders</h2>
-          <Link
-            href="/admin/orders"
-            className="text-sm text-orange-500 hover:underline"
-          >
-            View all →
-          </Link>
-        </div>
-        {recentOrders.length === 0 ? (
-          <p className="px-6 py-10 text-center text-muted-foreground text-sm">
-            No orders yet
+    <main className="p-6 sm:p-8 lg:p-10">
+      <FadeUp>
+        <div className="mb-8">
+          <p className="font-heading italic text-accent">{today}</p>
+          <h1 className="font-heading text-3xl font-bold sm:text-4xl">
+            Dashboard
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Here&apos;s how the kitchen is doing today.
           </p>
-        ) : (
-          <div className="divide-y">
-            {recentOrders.map((order) => (
+        </div>
+      </FadeUp>
+
+      <StaggerContainer className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-5">
+        {stats.map(({ label, value, Icon, color, live }) => (
+          <StaggerItem key={label}>
+            <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
               <div
-                key={order.id}
-                className="flex items-center gap-4 px-6 py-3"
+                className={`mb-4 flex h-11 w-11 items-center justify-center rounded-xl ${color}`}
               >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-mono text-sm font-medium">
-                      #{order.id.slice(-8).toUpperCase()}
-                    </span>
-                    <OrderStatusBadge status={order.status} />
-                  </div>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {order.user.name ?? order.user.email} ·{" "}
-                    {order.items.map((i) => i.menuItem.name).join(", ")}
-                  </p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="font-medium text-sm">
-                    ${order.total.toFixed(2)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(order.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                </div>
+                <Icon className="h-5 w-5" />
               </div>
-            ))}
+              {live && (
+                <span className="absolute right-5 top-5 flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                </span>
+              )}
+              <p className="font-heading text-3xl font-bold">{value}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+            </div>
+          </StaggerItem>
+        ))}
+      </StaggerContainer>
+
+      <FadeUp delay={0.15}>
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+          <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <h2 className="font-heading text-lg font-semibold">Recent Orders</h2>
+            <Link
+              href="/admin/orders"
+              className="inline-flex items-center gap-1 text-sm font-medium text-accent transition-colors hover:text-accent/80"
+            >
+              View all
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
-        )}
-      </div>
+          {recentOrders.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+                <ReceiptText className="h-6 w-6" />
+              </div>
+              <p className="text-sm font-medium">No orders yet</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                New orders will show up here as they come in.
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {recentOrders.map((order) => (
+                <div
+                  key={order.id}
+                  className="flex items-center gap-4 px-6 py-3.5 transition-colors hover:bg-secondary/30"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-0.5 flex items-center gap-2">
+                      <span className="font-mono text-sm font-medium">
+                        #{order.id.slice(-8).toUpperCase()}
+                      </span>
+                      <OrderStatusBadge status={order.status} />
+                    </div>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {order.user.name ?? order.user.email} ·{" "}
+                      {order.items.map((i) => i.menuItem.name).join(", ")}
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="font-heading text-sm font-semibold">
+                      ${order.total.toFixed(2)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(order.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </FadeUp>
     </main>
   );
 }

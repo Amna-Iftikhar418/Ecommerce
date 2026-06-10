@@ -19,10 +19,13 @@ const NAV = [
   { href: "/admin/settings", label: "Settings", Icon: Settings },
 ] as const;
 
-export default function AdminNav() {
+export default function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
-    <nav className="flex-1 p-3 space-y-1">
+    <nav className="flex-1 space-y-1 p-3">
+      <p className="px-3 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground/70">
+        Manage
+      </p>
       {NAV.map(({ href, label, Icon }) => {
         const active =
           href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
@@ -30,11 +33,12 @@ export default function AdminNav() {
           <Link
             key={href}
             href={href}
+            onClick={onNavigate}
             className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
               active
-                ? "bg-orange-500 text-white"
-                : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />

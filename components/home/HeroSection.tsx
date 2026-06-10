@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown, Clock, Sparkles, Star, UtensilsCrossed } from "lucide-react";
+import { ChefHat, ChevronDown, Clock, Sparkles, Star, UtensilsCrossed } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import FadeUp from "@/components/motion/FadeUp";
@@ -117,21 +117,33 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
           {/* Main image card */}
           <FadeUp delay={0.2}>
             <div className="relative aspect-4/5 overflow-hidden rounded-[2rem] rotate-2 shadow-2xl ring-1 ring-primary-foreground/10">
-              {featuredItem?.image ? (
+              <Image
+                src="/home.png"
+                alt=""
+                fill
+                priority
+                className="object-cover"
+              />
+              {featuredItem?.image && (
                 <Image
                   src={featuredItem.image}
                   alt={featuredItem.name}
                   fill
-                  priority
                   className="object-cover"
                 />
-              ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-accent/15 text-accent">
-                  <UtensilsCrossed className="h-20 w-20" />
-                  <Sparkles className="h-8 w-8" />
-                </div>
               )}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+              {/* Icon accent badge */}
+              <div className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-accent/90 px-3 py-2 text-primary shadow-lg backdrop-blur-sm">
+                <UtensilsCrossed className="h-6 w-6" />
+                <Sparkles className="h-5 w-5" />
+              </div>
+
+              {/* Centered food icon */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <ChefHat className="h-24 w-24 fill-primary text-primary drop-shadow-lg sm:h-32 sm:w-32" />
+              </div>
             </div>
           </FadeUp>
 

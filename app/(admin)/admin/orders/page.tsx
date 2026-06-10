@@ -26,14 +26,13 @@ export default async function AdminOrdersPage() {
   }));
 
   return (
-    <main className="p-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Orders</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {orders.length} total orders
-          </p>
-        </div>
+    <main className="p-6 sm:p-8 lg:p-10">
+      <div className="mb-8">
+        <p className="font-heading italic text-accent">Order Management</p>
+        <h1 className="font-heading text-3xl font-bold sm:text-4xl">Orders</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {orders.length} total order{orders.length !== 1 ? "s" : ""}
+        </p>
       </div>
       <OrdersClient initialOrders={serialized} />
     </main>
