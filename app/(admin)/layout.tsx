@@ -2,12 +2,15 @@ import Link from "next/link";
 import { ChefHat, ArrowLeft } from "lucide-react";
 import AdminNav from "@/components/admin/AdminNav";
 import AdminMobileNav from "@/components/admin/AdminMobileNav";
+import { getAdminUser } from "@/lib/auth";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await getAdminUser();
+
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
       <AdminMobileNav />

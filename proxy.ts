@@ -9,12 +9,6 @@ const isProtectedRoute = createRouteMatcher([
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
-    const { userId, sessionId } = await auth();
-    console.log("[proxy debug]", req.nextUrl.pathname, {
-      userId,
-      sessionId,
-      cookies: req.cookies.getAll().map((c) => c.name),
-    });
     await auth.protect();
   }
 });
