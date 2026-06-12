@@ -1,10 +1,14 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 import { Star, ChevronLeft, UtensilsCrossed } from "lucide-react";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import AddToCartSection from "@/components/menu/AddToCartSection";
+import ReviewForm from "@/components/menu/ReviewForm";
+import ReviewsList from "@/components/menu/ReviewsList";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -26,6 +30,21 @@ export default async function DishDetailPage({ params }: Props) {
   });
 
   if (!item) notFound();
+
+  const { userId } = await auth();
+
+  const [reviews, userReview] = await Promise.all([
+    db.review.findMany({
+      where: { menuItemId: item.id },
+      include: { user: { select: { name: true, email: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    userId
+      ? db.review.findUnique({
+          where: { userId_menuItemId: { userId, menuItemId: item.id } },
+        })
+      : null,
+  ]);
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
@@ -74,7 +93,11 @@ export default async function DishDetailPage({ params }: Props) {
                 {item.rating.toFixed(1)}
               </span>
             </div>
-            <span className="text-muted-foreground text-sm">rating</span>
+            <span className="text-muted-foreground text-sm">
+              {reviews.length === 0
+                ? "No reviews yet"
+                : `${reviews.length} review${reviews.length === 1 ? "" : "s"}`}
+            </span>
           </div>
 
           <p className="text-muted-foreground leading-relaxed">
@@ -96,6 +119,34 @@ export default async function DishDetailPage({ params }: Props) {
             options={item.options}
           />
         </div>
+      </div>
+
+      <Separator className="my-10" />
+
+      <div className="max-w-2xl">
+        <h2 className="font-heading text-2xl font-semibold mb-5">Reviews</h2>
+
+        <div className="mb-6">
+          {userId ? (
+            <ReviewForm
+              menuItemId={item.id}
+              existingReview={
+                userReview
+                  ? { rating: userReview.rating, comment: userReview.comment }
+                  : null
+              }
+            />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              <Link href="/sign-in" className="text-accent font-medium hover:underline">
+                Sign in
+              </Link>{" "}
+              to leave a review.
+            </p>
+          )}
+        </div>
+
+        <ReviewsList reviews={reviews} />
       </div>
     </div>
   );
