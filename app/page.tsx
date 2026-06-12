@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
+import { getSettings } from "@/lib/settings";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/home/HeroSection";
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [categories, featured] = await Promise.all([
+  const [categories, featured, settings] = await Promise.all([
     db.category.findMany({ orderBy: { order: "asc" } }),
     db.menuItem.findMany({
       where: { isAvailable: true, rating: { gte: 4.5 } },
@@ -25,16 +26,22 @@ export default async function HomePage() {
       orderBy: { rating: "desc" },
       take: 9,
     }),
+    getSettings(),
   ]);
+
+  const pricing = {
+    deliveryFee: settings.deliveryFee,
+    freeDeliveryThreshold: settings.freeDeliveryThreshold,
+    taxRate: settings.taxRate,
+  };
 
   const heroItem = featured[0] ?? null;
   const heroSecondaryItem = featured[8] ?? null;
-  const storyItem = featured[1] ?? null;
   const gridItems = featured.slice(2, 8);
 
   return (
     <>
-      <Navbar />
+      <Navbar pricing={pricing} />
       <HeroSection
         featuredItem={
           heroItem
@@ -64,7 +71,7 @@ export default async function HomePage() {
           isAvailable: item.isAvailable,
         }))}
       />
-      <StorySection visualImage={storyItem?.image ?? null} />
+      <StorySection />
       <MenuCategoriesSection categories={categories} />
       <WhyChooseUsSection />
       <TestimonialsSection />

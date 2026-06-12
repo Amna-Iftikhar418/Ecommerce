@@ -130,16 +130,9 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
               alt=""
               fill
               priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />
-            {featuredItem?.image && (
-              <Image
-                src={featuredItem.image}
-                alt={featuredItem.name}
-                fill
-                className="object-cover"
-              />
-            )}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent" />
 
             {/* Chef's special badge */}
@@ -167,6 +160,7 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
                   src={secondaryItem.image}
                   alt={secondaryItem.name}
                   fill
+                  sizes="112px"
                   className="object-cover"
                 />
               </div>

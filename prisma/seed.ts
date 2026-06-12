@@ -8,6 +8,31 @@ import { PrismaClient } from "../app/generated/prisma/client";
 const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter } as never);
 
+const UNSPLASH = "https://images.unsplash.com";
+const img = (id: string) => `${UNSPLASH}/photo-${id}?q=80&w=1200&auto=format&fit=crop`;
+
+const DISH_IMAGES: Record<string, string> = {
+  "garlic-bread": img("1486887396153-fa416526c108"),
+  bruschetta: img("1572695157366-5e585ab2b69f"),
+  "caesar-salad": img("1550304943-4f24f54ddde9"),
+  "tomato-soup": img("1547592166-23ac45744acd"),
+  "margherita-pizza": img("1574071318508-1cdbab80d002"),
+  "pepperoni-pizza": img("1534308983496-4fabb1a015ee"),
+  "bbq-chicken-pizza": img("1565299624946-b28f40a0ae38"),
+  "veggie-supreme-pizza": img("1571066811602-716837d681de"),
+  "spaghetti-bolognese": img("1622973536968-3ead9e780960"),
+  "fettuccine-alfredo": img("1645112411341-6c4fd023714a"),
+  "penne-arrabbiata": img("1473093295043-cdd812d0e601"),
+  "mushroom-risotto": img("1476124369491-e7addf5db371"),
+  tiramisu: img("1571877227200-a0d98ea607e9"),
+  "panna-cotta": img("1488477181946-6428a0291777"),
+  "chocolate-lava-cake": img("1624353365286-3f8d62daad51"),
+  "soft-drink": img("1554866585-cd94860890b7"),
+  "fresh-juice": img("1600271886742-f049cd451bba"),
+  espresso: img("1510707577719-ae7c14805e3a"),
+  "sparkling-water": img("1564419320461-6870880221ad"),
+};
+
 async function main() {
   await prisma.review.deleteMany();
   await prisma.orderItem.deleteMany();
@@ -42,6 +67,7 @@ async function main() {
           "Crispy Italian bread toasted with garlic butter and fresh herbs. Served warm.",
         price: 5.99,
         rating: 4.5,
+        image: DISH_IMAGES["garlic-bread"],
         categoryId: starters.id,
       },
       {
@@ -51,6 +77,7 @@ async function main() {
           "Grilled bread rubbed with garlic and topped with fresh tomatoes, basil, and olive oil.",
         price: 7.99,
         rating: 4.3,
+        image: DISH_IMAGES["bruschetta"],
         categoryId: starters.id,
       },
       {
@@ -60,6 +87,7 @@ async function main() {
           "Crisp romaine lettuce with creamy Caesar dressing, shaved parmesan, and homemade croutons.",
         price: 9.99,
         rating: 4.6,
+        image: DISH_IMAGES["caesar-salad"],
         categoryId: starters.id,
       },
       {
@@ -69,6 +97,7 @@ async function main() {
           "Rich, velvety tomato bisque made from vine-ripened tomatoes. Served with a crusty bread roll.",
         price: 6.49,
         rating: 4.4,
+        image: DISH_IMAGES["tomato-soup"],
         categoryId: starters.id,
       },
     ],
@@ -83,6 +112,7 @@ async function main() {
         "Classic pizza with San Marzano tomato sauce, fresh mozzarella, and basil. Simple and perfect.",
       price: 14.99,
       rating: 4.7,
+      image: DISH_IMAGES["margherita-pizza"],
       categoryId: pizzas.id,
     },
   });
@@ -107,6 +137,7 @@ async function main() {
         "Generous layers of pepperoni over tomato sauce and melted mozzarella cheese.",
       price: 16.99,
       rating: 4.8,
+      image: DISH_IMAGES["pepperoni-pizza"],
       categoryId: pizzas.id,
     },
   });
@@ -132,6 +163,7 @@ async function main() {
           "Smoky BBQ sauce with grilled chicken, red onion, and mozzarella. A crowd favourite.",
         price: 17.99,
         rating: 4.5,
+        image: DISH_IMAGES["bbq-chicken-pizza"],
         categoryId: pizzas.id,
       },
       {
@@ -141,6 +173,7 @@ async function main() {
           "Loaded with bell peppers, mushrooms, olives, spinach, and sun-dried tomatoes.",
         price: 15.99,
         rating: 4.4,
+        image: DISH_IMAGES["veggie-supreme-pizza"],
         categoryId: pizzas.id,
       },
     ],
@@ -156,6 +189,7 @@ async function main() {
           "Al dente spaghetti with a slow-cooked beef and pork ragù. A timeless Italian classic.",
         price: 13.99,
         rating: 4.6,
+        image: DISH_IMAGES["spaghetti-bolognese"],
         categoryId: pastas.id,
       },
       {
@@ -165,6 +199,7 @@ async function main() {
           "Silky fettuccine in a rich parmesan cream sauce. Comforting and indulgent.",
         price: 12.99,
         rating: 4.5,
+        image: DISH_IMAGES["fettuccine-alfredo"],
         categoryId: pastas.id,
       },
       {
@@ -174,6 +209,7 @@ async function main() {
           "Penne pasta in a spicy San Marzano tomato sauce with garlic and chilli flakes.",
         price: 11.99,
         rating: 4.3,
+        image: DISH_IMAGES["penne-arrabbiata"],
         categoryId: pastas.id,
       },
       {
@@ -183,6 +219,7 @@ async function main() {
           "Creamy Arborio rice with wild mushrooms, white wine, and truffle oil. Vegetarian.",
         price: 14.99,
         rating: 4.7,
+        image: DISH_IMAGES["mushroom-risotto"],
         categoryId: pastas.id,
       },
     ],
@@ -198,6 +235,7 @@ async function main() {
           "Classic Italian dessert with layers of espresso-soaked ladyfingers and mascarpone cream.",
         price: 7.99,
         rating: 4.9,
+        image: DISH_IMAGES["tiramisu"],
         categoryId: desserts.id,
       },
       {
@@ -207,6 +245,7 @@ async function main() {
           "Silky vanilla bean panna cotta served with a fresh berry coulis.",
         price: 6.99,
         rating: 4.7,
+        image: DISH_IMAGES["panna-cotta"],
         categoryId: desserts.id,
       },
       {
@@ -216,6 +255,7 @@ async function main() {
           "Warm chocolate cake with a molten centre, served with a scoop of vanilla gelato.",
         price: 8.99,
         rating: 4.8,
+        image: DISH_IMAGES["chocolate-lava-cake"],
         categoryId: desserts.id,
       },
     ],
@@ -229,6 +269,7 @@ async function main() {
       description: "Your choice of chilled soft drink. Served over ice.",
       price: 2.99,
       rating: 4.0,
+      image: DISH_IMAGES["soft-drink"],
       categoryId: drinks.id,
     },
   });
@@ -253,6 +294,7 @@ async function main() {
       description: "Freshly squeezed fruit juice, prepared to order.",
       price: 4.99,
       rating: 4.5,
+      image: DISH_IMAGES["fresh-juice"],
       categoryId: drinks.id,
     },
   });
@@ -279,6 +321,7 @@ async function main() {
           "Rich, intense Italian espresso. Perfect to finish your meal.",
         price: 2.99,
         rating: 4.6,
+        image: DISH_IMAGES["espresso"],
         categoryId: drinks.id,
       },
       {
@@ -287,6 +330,7 @@ async function main() {
         description: "San Pellegrino sparkling mineral water. 500ml bottle.",
         price: 2.49,
         rating: 4.2,
+        image: DISH_IMAGES["sparkling-water"],
         categoryId: drinks.id,
       },
     ],

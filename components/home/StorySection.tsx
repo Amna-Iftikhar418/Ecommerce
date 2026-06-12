@@ -1,14 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ChefHat } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import FadeUp from "@/components/motion/FadeUp";
 import ParallaxElement from "@/components/motion/ParallaxElement";
+import FallingWords from "@/components/home/FallingWords";
 
-type StorySectionProps = {
-  visualImage: string | null;
-};
-
-export default function StorySection({ visualImage }: StorySectionProps) {
+export default function StorySection() {
   return (
     <section className="py-24 px-4 bg-secondary/40">
       <div className="container mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
@@ -45,18 +42,15 @@ export default function StorySection({ visualImage }: StorySectionProps) {
         <FadeUp delay={0.15}>
           <ParallaxElement speed={0.6}>
             <div className="relative aspect-4/5 overflow-hidden rounded-3xl shadow-2xl">
-              {visualImage ? (
-                <Image
-                  src={visualImage}
-                  alt="Inside the Bella Cucina kitchen"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary">
-                  <ChefHat className="h-24 w-24" />
-                </div>
-              )}
+              <Image
+                src="/green.jpg"
+                alt="Inside the Bella Cucina kitchen"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
+              <FallingWords />
+              <div className="green-border-beam pointer-events-none" />
             </div>
           </ParallaxElement>
         </FadeUp>

@@ -21,6 +21,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
             src={item.image}
             alt={item.name}
             fill
+            sizes="80px"
             className="object-cover"
           />
         ) : (

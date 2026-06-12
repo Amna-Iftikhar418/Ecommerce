@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UtensilsCrossed, Menu } from "lucide-react";
-import { UserButton, SignInButton, useAuth } from "@clerk/nextjs";
+import { UserButton, SignInButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import CartSidebar from "@/components/cart/CartSidebar";
 import { cn } from "@/lib/utils";
+import type { PricingSettings } from "@/lib/pricing";
 
 const NAV_LINKS = [
   { href: "/menu", label: "Menu" },
@@ -21,8 +22,9 @@ const NAV_LINKS = [
   { href: "/orders", label: "My Orders" },
 ];
 
-export default function Navbar() {
-  const { isSignedIn } = useAuth();
+export default function Navbar({ pricing }: { pricing: PricingSettings }) {
+  const { isSignedIn, user } = useUser();
+  const isAdmin = user?.publicMetadata?.role === "ADMIN";
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -38,6 +40,10 @@ export default function Navbar() {
 
   const isHome = pathname === "/";
   const transparent = isHome && !scrolled;
+
+  const navLinks = isAdmin
+    ? [...NAV_LINKS, { href: "/admin", label: "Admin Panel" }]
+    : NAV_LINKS;
 
   return (
     <nav
@@ -68,7 +74,7 @@ export default function Navbar() {
 
         {/* Desktop nav links */}
         <div className="hidden items-center gap-6 sm:flex">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -83,7 +89,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 text-current">
-          <CartSidebar />
+          <CartSidebar pricing={pricing} />
           {isSignedIn ? (
             <UserButton />
           ) : (
@@ -113,7 +119,7 @@ export default function Navbar() {
             </SheetTitle>
           </SheetHeader>
           <nav className="flex flex-col gap-1 px-4 py-4">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

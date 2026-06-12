@@ -30,13 +30,14 @@ export default function MenuCard({
 }: MenuCardProps) {
   return (
     <Link href={`/menu/${slug}`} className="block h-full">
-      <Card className="group h-full overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+      <Card className="group shield-reflection h-full overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
         <div className="relative h-48 overflow-hidden bg-muted">
           {image ? (
             <Image
               src={image}
               alt={name}
               fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (

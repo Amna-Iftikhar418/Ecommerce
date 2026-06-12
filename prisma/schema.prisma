@@ -71,15 +71,20 @@ model MenuItemOption {
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id])
-  status    OrderStatus @default(PENDING)
-  items     OrderItem[]
-  total     Float
-  address   Json
-  paymentId String?
-  createdAt DateTime    @default(now())
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  status        OrderStatus   @default(PENDING)
+  items         OrderItem[]
+  subtotal      Float         @default(0)
+  deliveryFee   Float         @default(0)
+  tax           Float         @default(0)
+  total         Float
+  address       Json
+  paymentId     String?
+  paymentMethod PaymentMethod @default(CARD)
+  paymentStatus PaymentStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
 }
 
 enum OrderStatus {
@@ -88,6 +93,16 @@ enum OrderStatus {
   ON_THE_WAY
   DELIVERED
   CANCELLED
+}
+
+enum PaymentMethod {
+  CARD
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
 }
 
 model OrderItem {
@@ -113,15 +128,18 @@ model Review {
 }
 
 model Settings {
-  id                String  @id @default("singleton")
-  restaurantName    String  @default("Bella Cucina")
-  restaurantPhone   String  @default("")
-  restaurantEmail   String  @default("")
-  deliveryRadius    Float   @default(10)
-  minimumOrder      Float   @default(15)
-  deliveryFee       Float   @default(3.99)
-  estimatedDelivery Int     @default(30)
-  openingTime       String  @default("11:00")
-  closingTime       String  @default("22:00")
-  isOpen            Boolean @default(true)
+  id                    String  @id @default("singleton")
+  restaurantName        String  @default("Bella Cucina")
+  restaurantPhone       String  @default("")
+  restaurantEmail       String  @default("")
+  deliveryRadius        Float   @default(10)
+  minimumOrder          Float   @default(15)
+  deliveryFee           Float   @default(3.99)
+  freeDeliveryThreshold Float   @default(50)
+  taxRate               Float   @default(8)
+  estimatedDelivery     Int     @default(30)
+  openingTime           String  @default("11:00")
+  closingTime           String  @default("22:00")
+  isOpen                Boolean @default(true)
+  codEnabled            Boolean @default(true)
 }

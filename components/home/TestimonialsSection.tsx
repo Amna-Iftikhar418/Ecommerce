@@ -99,7 +99,7 @@ export default function TestimonialsSection() {
           {TESTIMONIALS.map((t) => (
             <div
               key={t.name}
-              className="min-w-[320px] sm:min-w-[400px] snap-center rounded-2xl border border-border bg-card p-8 shadow-md"
+              className="shield-reflection min-w-[320px] sm:min-w-[400px] snap-center rounded-2xl border border-border bg-card p-8 shadow-md"
             >
               <div className="mb-4 flex gap-1">
                 {Array.from({ length: t.rating }).map((_, i) => (

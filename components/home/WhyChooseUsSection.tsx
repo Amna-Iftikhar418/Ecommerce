@@ -55,7 +55,7 @@ export default function WhyChooseUsSection() {
               key={feature.title}
               className={cn(i % 2 === 1 && "lg:translate-y-8")}
             >
-              <div className="h-full rounded-2xl border border-border bg-card p-8 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl">
+              <div className="shield-reflection h-full rounded-2xl border border-border bg-card p-8 shadow-sm transition-all hover:-translate-y-2 hover:shadow-xl">
                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/15 text-accent">
                   <feature.icon className="h-8 w-8" />
                 </div>

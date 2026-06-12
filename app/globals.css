@@ -20,7 +20,7 @@
   --color-sidebar: var(--sidebar);
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
+  --color-chart-3: #22c55e;
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
@@ -127,4 +127,75 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Hide Clerk's "Secured by Clerk" branding and "Development mode" badge
+   across SignIn, SignUp, UserButton, and UserProfile. Backstops
+   appearance.elements in lib/clerkAppearance.ts in case Clerk's own
+   styles win the cascade. */
+.cl-footer,
+.cl-footerAction,
+.cl-footerPages,
+.cl-userButtonPopoverFooter {
+  display: none !important;
+}
+
+@keyframes border-beam-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.green-border-beam {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 3px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.green-border-beam::before {
+  content: "";
+  position: absolute;
+  inset: -150%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    transparent 65%,
+    #22c55e 80%,
+    var(--chart-1) 92%,
+    transparent 100%
+  );
+  animation: border-beam-spin 4s linear infinite;
+}
+
+.shield-reflection {
+  position: relative;
+  overflow: hidden;
+}
+
+.shield-reflection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.25) 43%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.25) 57%,
+    transparent 65%,
+    transparent 100%
+  );
+  transform: translateX(-150%);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.shield-reflection:hover::before {
+  transform: translateX(150%);
 }

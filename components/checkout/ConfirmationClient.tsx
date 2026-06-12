@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Banknote } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -12,14 +12,20 @@ type Props = {
   customerEmail: string | null;
   orderId: string | null;
   orderTotal: number;
+  deliveryFee: number;
+  tax: number;
   orderItems: { name: string; quantity: number; price: number }[];
+  paymentMethod: "CARD" | "COD";
 };
 
 export default function ConfirmationClient({
   customerEmail,
   orderId,
   orderTotal,
+  deliveryFee,
+  tax,
   orderItems,
+  paymentMethod,
 }: Props) {
   const clearCart = useCartStore((s) => s.clearCart);
 
@@ -28,6 +34,7 @@ export default function ConfirmationClient({
   }, [clearCart]);
 
   const orderRef = orderId ? `#${orderId.slice(-8).toUpperCase()}` : "";
+  const subtotal = orderItems.reduce((s, i) => s + i.price * i.quantity, 0);
 
   return (
     <main className="container mx-auto max-w-lg px-4 py-16 sm:py-20">
@@ -67,10 +74,40 @@ export default function ConfirmationClient({
             ))}
           </div>
           <Separator className="my-4" />
+          <div className="space-y-2 text-sm mb-2">
+            <div className="flex justify-between text-muted-foreground">
+              <span>Subtotal</span>
+              <span>${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-muted-foreground">
+              <span>Delivery</span>
+              {deliveryFee === 0 ? (
+                <span className="text-green-600 font-medium">Free</span>
+              ) : (
+                <span>${deliveryFee.toFixed(2)}</span>
+              )}
+            </div>
+            <div className="flex justify-between text-muted-foreground">
+              <span>Tax</span>
+              <span>${tax.toFixed(2)}</span>
+            </div>
+          </div>
+          <Separator className="my-4" />
           <div className="flex justify-between font-bold">
             <span>Total</span>
             <span>${orderTotal.toFixed(2)}</span>
           </div>
+        </div>
+      )}
+
+      {paymentMethod === "COD" && (
+        <div className="flex items-center gap-3 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 mb-4 text-sm text-yellow-800">
+          <Banknote className="h-5 w-5 shrink-0" />
+          <p>
+            <span className="font-semibold">Cash on Delivery</span> — please
+            have <span className="font-semibold">${orderTotal.toFixed(2)}</span> ready
+            for the driver.
+          </p>
         </div>
       )}
 

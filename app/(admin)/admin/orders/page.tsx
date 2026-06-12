@@ -17,6 +17,8 @@ export default async function AdminOrdersPage() {
     id: o.id,
     status: o.status,
     total: o.total,
+    paymentMethod: o.paymentMethod,
+    paymentStatus: o.paymentStatus,
     createdAt: o.createdAt.toISOString(),
     user: o.user,
     items: o.items.map((i) => ({

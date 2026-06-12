@@ -3,17 +3,29 @@
 import { useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, ImageIcon } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  ImageIcon,
+  ImagePlus,
+  Upload,
+  X,
+  Loader2,
+  UtensilsCrossed,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
@@ -24,6 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DataTable from "@/components/admin/DataTable";
+import { cn } from "@/lib/utils";
 
 type Category = { id: string; name: string };
 type MenuItem = {
@@ -319,12 +332,96 @@ export default function MenuClient({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
-              {editing ? `Edit: ${editing.name}` : "Add Menu Item"}
-            </DialogTitle>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/10">
+                <UtensilsCrossed className="h-5 w-5 text-accent" />
+              </div>
+              <div>
+                <DialogTitle className="font-heading text-lg">
+                  {editing ? "Edit Menu Item" : "Add Menu Item"}
+                </DialogTitle>
+                <DialogDescription>
+                  {editing
+                    ? `Update details for "${editing.name}"`
+                    : "Add a new dish to your menu"}
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
 
-          <div className="space-y-4 py-2">
+          <div className="space-y-5 py-1">
+            <div>
+              <Label>Photo</Label>
+              <div className="mt-1.5">
+                {form.image ? (
+                  <div className="group relative h-40 w-full overflow-hidden rounded-xl border border-border bg-muted">
+                    <Image
+                      src={form.image}
+                      alt="Preview"
+                      fill
+                      sizes="(max-width: 640px) 100vw, 512px"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
+                      <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-white/95 px-3 py-1.5 text-xs font-medium text-foreground shadow-sm hover:bg-white">
+                        <Upload className="h-3.5 w-3.5" />
+                        Replace
+                        <input
+                          type="file"
+                          accept="image/*"
+                          disabled={uploading}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) void handleImageUpload(file);
+                          }}
+                          className="hidden"
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setForm((f) => ({ ...f, image: "" }))}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-white/95 px-3 py-1.5 text-xs font-medium text-red-600 shadow-sm hover:bg-white"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                        Remove
+                      </button>
+                    </div>
+                    {uploading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                        <Loader2 className="h-5 w-5 animate-spin text-white" />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <label
+                    className={cn(
+                      "flex h-32 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/30 transition-colors hover:border-accent hover:bg-accent/5",
+                      uploading && "pointer-events-none opacity-60"
+                    )}
+                  >
+                    {uploading ? (
+                      <Loader2 className="h-5 w-5 animate-spin text-accent" />
+                    ) : (
+                      <ImagePlus className="h-5 w-5 text-muted-foreground" />
+                    )}
+                    <span className="text-xs text-muted-foreground">
+                      {uploading ? "Uploading..." : "Click to upload a photo"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={uploading}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) void handleImageUpload(file);
+                      }}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </div>
+            </div>
+
             <div>
               <Label>
                 Name <span className="text-red-500">*</span>
@@ -333,7 +430,7 @@ export default function MenuClient({
                 value={form.name}
                 onChange={(e) => handleNameChange(e.target.value)}
                 placeholder="Grilled Salmon"
-                className="mt-1"
+                className="mt-1.5"
               />
             </div>
 
@@ -346,9 +443,11 @@ export default function MenuClient({
                 }
                 placeholder="Fresh Atlantic salmon with herbs..."
                 rows={3}
-                className="mt-1"
+                className="mt-1.5"
               />
             </div>
+
+            <Separator />
 
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -364,7 +463,7 @@ export default function MenuClient({
                     setForm((f) => ({ ...f, price: e.target.value }))
                   }
                   placeholder="12.99"
-                  className="mt-1"
+                  className="mt-1.5"
                 />
               </div>
               <div>
@@ -377,7 +476,7 @@ export default function MenuClient({
                     setForm((f) => ({ ...f, categoryId: v ?? "" }))
                   }
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-1.5 w-full">
                     <SelectValue placeholder="Select..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -391,65 +490,37 @@ export default function MenuClient({
               </div>
             </div>
 
-            <div>
-              <Label>
-                Slug <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                value={form.slug}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, slug: toSlug(e.target.value) }))
-                }
-                placeholder="grilled-salmon"
-                className="mt-1 font-mono text-sm"
-              />
-            </div>
-
-            <div>
-              <Label>Availability</Label>
-              <Select
-                value={form.isAvailable ? "true" : "false"}
-                onValueChange={(v) =>
-                  setForm((f) => ({ ...f, isAvailable: (v ?? "true") === "true" }))
-                }
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="true">Available</SelectItem>
-                  <SelectItem value="false">Unavailable</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label>Image</Label>
-              {form.image && (
-                <div className="mt-1 mb-2 relative h-32 w-full rounded-lg overflow-hidden bg-muted">
-                  <Image
-                    src={form.image}
-                    alt="Preview"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
-              <Input
-                type="file"
-                accept="image/*"
-                disabled={uploading}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) void handleImageUpload(file);
-                }}
-                className="mt-1"
-              />
-              {uploading && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Uploading...
-                </p>
-              )}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>
+                  Slug <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  value={form.slug}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, slug: toSlug(e.target.value) }))
+                  }
+                  placeholder="grilled-salmon"
+                  className="mt-1.5 font-mono text-sm"
+                />
+              </div>
+              <div>
+                <Label>Availability</Label>
+                <Select
+                  value={form.isAvailable ? "true" : "false"}
+                  onValueChange={(v) =>
+                    setForm((f) => ({ ...f, isAvailable: (v ?? "true") === "true" }))
+                  }
+                >
+                  <SelectTrigger className="mt-1.5 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">Available</SelectItem>
+                    <SelectItem value="false">Unavailable</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 

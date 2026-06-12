@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { UtensilsCrossed } from "lucide-react";
 import { SignUp } from "@clerk/nextjs";
+import FadeUp from "@/components/motion/FadeUp";
 
 export default function SignUpPage() {
   return (
@@ -8,7 +9,7 @@ export default function SignUpPage() {
       <div className="pointer-events-none absolute -top-32 -left-32 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-32 -right-32 h-80 w-80 rounded-full bg-accent/15 blur-3xl" />
 
-      <div className="relative flex flex-col items-center">
+      <FadeUp className="relative flex w-full max-w-md flex-col items-center">
         <Link
           href="/"
           className="mb-8 flex items-center gap-2 font-heading text-2xl font-bold text-foreground"
@@ -20,7 +21,13 @@ export default function SignUpPage() {
           Join the table
         </p>
         <SignUp />
-      </div>
+        <p className="mt-6 text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link href="/sign-in" className="font-medium text-accent hover:text-accent/80">
+            Sign in
+          </Link>
+        </p>
+      </FadeUp>
     </div>
   );
 }

@@ -24,7 +24,11 @@ export default async function OrderTrackingPage({
   const serialized = {
     id: order.id,
     status: order.status,
+    deliveryFee: order.deliveryFee,
+    tax: order.tax,
     total: order.total,
+    paymentMethod: order.paymentMethod,
+    paymentStatus: order.paymentStatus,
     createdAt: order.createdAt.toISOString(),
     address: order.address as {
       line1: string;

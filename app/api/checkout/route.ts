@@ -3,6 +3,9 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
+import { getSettings } from "@/lib/settings";
+import { calculatePricing } from "@/lib/pricing";
+import { sendOrderConfirmationEmail } from "@/lib/email";
 
 type CartItemPayload = {
   menuItemId: string;
@@ -11,6 +14,8 @@ type CartItemPayload = {
   quantity: number;
   options: { name: string; choice: string; priceModifier: number }[];
 };
+
+type PaymentMethod = "CARD" | "COD";
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,12 +32,20 @@ export async function POST(req: NextRequest) {
     const body = (await req.json()) as {
       items: CartItemPayload[];
       address: Record<string, string>;
+      paymentMethod?: PaymentMethod;
     };
-    const { items, address } = body;
+    const { items, address, paymentMethod = "CARD" } = body;
 
     if (!items?.length || !address) {
       return NextResponse.json(
         { error: "Missing items or address" },
+        { status: 400 }
+      );
+    }
+
+    if (paymentMethod !== "CARD" && paymentMethod !== "COD") {
+      return NextResponse.json(
+        { error: "Invalid payment method" },
         { status: 400 }
       );
     }
@@ -70,16 +83,35 @@ export async function POST(req: NextRequest) {
         item.options.reduce((s, o) => s + o.priceModifier, 0),
     }));
 
-    const total = enriched.reduce(
+    const subtotal = enriched.reduce(
       (sum, item) => sum + item.unitPrice * item.quantity,
       0
     );
+
+    const settings = await getSettings();
+
+    if (paymentMethod === "COD" && !settings.codEnabled) {
+      return NextResponse.json(
+        { error: "Cash on delivery is currently unavailable. Please pay by card." },
+        { status: 400 }
+      );
+    }
+
+    const { deliveryFee, tax, total } = calculatePricing(subtotal, {
+      deliveryFee: settings.deliveryFee,
+      freeDeliveryThreshold: settings.freeDeliveryThreshold,
+      taxRate: settings.taxRate,
+    });
 
     // Pre-create order in DB so metadata only needs the ID
     const order = await db.order.create({
       data: {
         userId,
         status: "PENDING",
+        paymentMethod,
+        subtotal,
+        deliveryFee,
+        tax,
         total,
         address,
         items: {
@@ -91,7 +123,38 @@ export async function POST(req: NextRequest) {
           })),
         },
       },
+      include: { items: { include: { menuItem: true } } },
     });
+
+    if (paymentMethod === "COD") {
+      const addr = address as {
+        line1: string;
+        line2?: string;
+        city: string;
+        state: string;
+        zip: string;
+        country?: string;
+      };
+
+      await sendOrderConfirmationEmail({
+        to: email,
+        customerName: clerkUser.fullName ?? "Customer",
+        orderId: order.id,
+        items: order.items.map((i) => ({
+          name: i.menuItem.name,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+        subtotal,
+        deliveryFee,
+        tax,
+        total,
+        address: addr,
+        paymentMethod: "COD",
+      }).catch(console.error);
+
+      return NextResponse.json({ orderId: order.id });
+    }
 
     const lineItems = enriched.map((item) => ({
       price_data: {
@@ -101,6 +164,28 @@ export async function POST(req: NextRequest) {
       },
       quantity: item.quantity,
     }));
+
+    if (deliveryFee > 0) {
+      lineItems.push({
+        price_data: {
+          currency: "usd",
+          product_data: { name: "Delivery Fee" },
+          unit_amount: Math.round(deliveryFee * 100),
+        },
+        quantity: 1,
+      });
+    }
+
+    if (tax > 0) {
+      lineItems.push({
+        price_data: {
+          currency: "usd",
+          product_data: { name: `Tax (${settings.taxRate}%)` },
+          unit_amount: Math.round(tax * 100),
+        },
+        quantity: 1,
+      });
+    }
 
     try {
       const session = await stripe.checkout.sessions.create({

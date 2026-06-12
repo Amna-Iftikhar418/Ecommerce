@@ -7,10 +7,11 @@ import { useCartStore } from "@/store/cartStore";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { calculatePricing, type PricingSettings } from "@/lib/pricing";
 import PageHeader from "@/components/PageHeader";
 import CartItem from "./CartItem";
 
-export default function CartPageClient() {
+export default function CartPageClient({ pricing }: { pricing: PricingSettings }) {
   const items = useCartStore((s) => s.items);
   const total = useCartStore((s) => s.total);
   const clearCart = useCartStore((s) => s.clearCart);
@@ -40,8 +41,10 @@ export default function CartPageClient() {
   }
 
   const subtotal = total();
-  const tax = subtotal * 0.08;
-  const grandTotal = subtotal + tax;
+  const { deliveryFee, tax, total: grandTotal, amountToFreeDelivery } = calculatePricing(
+    subtotal,
+    pricing
+  );
 
   return (
     <div>
@@ -75,14 +78,24 @@ export default function CartPageClient() {
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Est. tax (8%)</span>
+                  <span className="text-muted-foreground">Est. tax ({pricing.taxRate}%)</span>
                   <span>${tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Delivery</span>
-                  <span className="text-green-600 font-medium">Free</span>
+                  {deliveryFee === 0 ? (
+                    <span className="text-green-600 font-medium">Free</span>
+                  ) : (
+                    <span>${deliveryFee.toFixed(2)}</span>
+                  )}
                 </div>
               </div>
+
+              {amountToFreeDelivery !== null && (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Add ${amountToFreeDelivery.toFixed(2)} more to qualify for free delivery
+                </p>
+              )}
 
               <Separator className="my-4" />
 

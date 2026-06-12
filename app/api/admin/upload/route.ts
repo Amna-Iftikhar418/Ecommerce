@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { put } from "@vercel/blob";
+import { uploadImage } from "@/lib/blob";
 
 async function requireAdmin() {
   const user = await currentUser();
@@ -20,9 +20,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  const blob = await put(`menu/${Date.now()}-${file.name}`, file, {
-    access: "public",
-  });
+  const url = await uploadImage(file);
 
-  return NextResponse.json({ url: blob.url });
+  return NextResponse.json({ url });
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Package } from "lucide-react";
+import { Package, Banknote } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { getAuthUser } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -60,6 +60,12 @@ export default async function OrdersPage() {
                   <div className="flex items-center gap-3 flex-wrap mb-1">
                     <span className="font-mono font-semibold text-sm">{orderRef}</span>
                     <OrderStatusBadge status={order.status} />
+                    {order.paymentMethod === "COD" && (
+                      <span className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium bg-amber-100 text-amber-800 border-amber-200">
+                        <Banknote className="h-3 w-3" />
+                        Cash on Delivery
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm text-muted-foreground mb-1">{date}</p>
                   <p className="text-sm truncate">

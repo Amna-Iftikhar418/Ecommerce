@@ -15,9 +15,10 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { calculatePricing, type PricingSettings } from "@/lib/pricing";
 import CartItem from "./CartItem";
 
-export default function CartSidebar() {
+export default function CartSidebar({ pricing }: { pricing: PricingSettings }) {
   const [open, setOpen] = useState(false);
   const items = useCartStore((s) => s.items);
   const total = useCartStore((s) => s.total);
@@ -26,8 +27,7 @@ export default function CartSidebar() {
 
   const itemCount = items.reduce((s, i) => s + i.quantity, 0);
   const subtotal = total();
-  const tax = subtotal * 0.08;
-  const grandTotal = subtotal + tax;
+  const { deliveryFee, tax, total: grandTotal } = calculatePricing(subtotal, pricing);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -90,12 +90,16 @@ export default function CartSidebar() {
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
-                  <span>Est. tax (8%)</span>
+                  <span>Est. tax ({pricing.taxRate}%)</span>
                   <span>${tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Delivery</span>
-                  <span className="text-green-600 font-medium">Free</span>
+                  {deliveryFee === 0 ? (
+                    <span className="text-green-600 font-medium">Free</span>
+                  ) : (
+                    <span>${deliveryFee.toFixed(2)}</span>
+                  )}
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold text-base">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { CheckCircle, Circle, Package, ChefHat, Truck, MapPin } from "lucide-react";
+import { CheckCircle, Circle, Package, ChefHat, Truck, MapPin, Banknote, CreditCard } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -10,11 +10,17 @@ import PageHeader from "@/components/PageHeader";
 import OrderStatusBadge from "./OrderStatusBadge";
 
 type OrderStatus = "PENDING" | "PREPARING" | "ON_THE_WAY" | "DELIVERED" | "CANCELLED";
+type PaymentMethod = "CARD" | "COD";
+type PaymentStatus = "PENDING" | "PAID";
 
 type TrackedOrder = {
   id: string;
   status: OrderStatus;
+  deliveryFee: number;
+  tax: number;
   total: number;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
   createdAt: string;
   address: { line1: string; line2?: string; city: string; state: string; zip: string; country: string };
   items: {
@@ -60,6 +66,7 @@ export default function OrderTrackingClient({ initialOrder }: { initialOrder: Tr
   const currentStep = STATUS_INDEX[order.status];
   const isCancelled = order.status === "CANCELLED";
   const orderRef = `#${order.id.slice(-8).toUpperCase()}`;
+  const subtotal = order.items.reduce((s, i) => s + i.price * i.quantity, 0);
   const createdAt = new Date(order.createdAt).toLocaleDateString("en-US", {
     month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit",
   });
@@ -175,10 +182,54 @@ export default function OrderTrackingClient({ initialOrder }: { initialOrder: Tr
             ))}
           </div>
           <Separator className="my-4" />
+          <div className="space-y-2 text-sm mb-2">
+            <div className="flex justify-between text-muted-foreground">
+              <span>Subtotal</span>
+              <span>${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-muted-foreground">
+              <span>Delivery</span>
+              {order.deliveryFee === 0 ? (
+                <span className="text-green-600 font-medium">Free</span>
+              ) : (
+                <span>${order.deliveryFee.toFixed(2)}</span>
+              )}
+            </div>
+            <div className="flex justify-between text-muted-foreground">
+              <span>Tax</span>
+              <span>${order.tax.toFixed(2)}</span>
+            </div>
+          </div>
+          <Separator className="my-4" />
           <div className="flex justify-between font-bold">
             <span>Total</span>
             <span>${order.total.toFixed(2)}</span>
           </div>
+          <div className="flex justify-between items-center text-sm text-muted-foreground mt-2">
+            <span className="flex items-center gap-1.5">
+              {order.paymentMethod === "COD" ? (
+                <Banknote className="h-3.5 w-3.5" />
+              ) : (
+                <CreditCard className="h-3.5 w-3.5" />
+              )}
+              {order.paymentMethod === "COD" ? "Cash on Delivery" : "Card"}
+            </span>
+            <span className={cn(
+              "rounded-full border px-2 py-0.5 text-xs font-medium",
+              order.paymentStatus === "PAID"
+                ? "bg-green-100 text-green-800 border-green-200"
+                : "bg-yellow-100 text-yellow-800 border-yellow-200"
+            )}>
+              {order.paymentStatus === "PAID" ? "Paid" : "Unpaid"}
+            </span>
+          </div>
+
+          {order.paymentMethod === "COD" && order.paymentStatus === "PENDING" && (
+            <div className="mt-4 flex items-center gap-2 rounded-xl border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
+              <Banknote className="h-4 w-4 shrink-0" />
+              <p>Please have <span className="font-semibold">${order.total.toFixed(2)}</span> ready for the driver.</p>
+            </div>
+          )}
 
           <Link
             href="/menu"

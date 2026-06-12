@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     // Update order with payment ID
     const order = await db.order.update({
       where: { id: orderId },
-      data: { paymentId: paymentIntentId },
+      data: { paymentId: paymentIntentId, paymentStatus: "PAID" },
       include: { items: { include: { menuItem: true } }, user: true },
     });
 
@@ -60,8 +60,12 @@ export async function POST(req: NextRequest) {
         quantity: i.quantity,
         price: i.price,
       })),
+      subtotal: order.subtotal,
+      deliveryFee: order.deliveryFee,
+      tax: order.tax,
       total: order.total,
       address,
+      paymentMethod: "CARD",
     }).catch(console.error); // don't fail the webhook if email fails
   }
 

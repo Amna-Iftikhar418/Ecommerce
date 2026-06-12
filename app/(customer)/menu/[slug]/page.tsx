@@ -45,6 +45,7 @@ export default async function DishDetailPage({ params }: Props) {
               src={item.image}
               alt={item.name}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
               priority
             />

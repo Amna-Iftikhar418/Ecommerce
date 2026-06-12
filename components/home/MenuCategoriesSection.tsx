@@ -32,7 +32,7 @@ export default function MenuCategoriesSection({
               <StaggerItem key={cat.id}>
                 <Link
                   href={`/menu?category=${cat.slug}`}
-                  className="group flex flex-col items-center gap-4 rounded-2xl border border-primary-foreground/10 bg-primary-foreground/5 p-8 text-center transition-colors hover:bg-accent hover:text-primary"
+                  className="group shield-reflection flex flex-col items-center gap-4 rounded-2xl border border-primary-foreground/10 bg-primary-foreground/5 p-8 text-center transition-colors hover:bg-accent hover:text-primary"
                 >
                   <Icon className="h-12 w-12 transition-transform group-hover:scale-110" />
                   <span className="font-heading text-lg font-semibold">
