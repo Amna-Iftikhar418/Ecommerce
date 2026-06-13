@@ -16,7 +16,7 @@ export default async function AdminLayout({
       <AdminMobileNav />
       <aside className="dark sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-background text-foreground lg:flex">
         <Link
-          href="/admin"
+          href="/"
           className="relative flex items-center gap-3 overflow-hidden border-b border-border px-6 py-6"
         >
           <span className="pointer-events-none absolute -left-10 -top-12 h-32 w-32 rounded-full bg-primary/25 blur-3xl" />

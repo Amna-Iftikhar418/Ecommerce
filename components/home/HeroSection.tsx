@@ -126,7 +126,7 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
             className="relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-primary-foreground/10"
           >
             <Image
-              src="/home.png"
+              src="/card.png"
               alt=""
               fill
               priority
@@ -138,15 +138,15 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
             {/* Chef's special badge */}
             <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full border border-white/20 bg-card/85 px-3 py-1.5 text-card-foreground shadow-lg backdrop-blur-xl">
               <Sparkles className="h-4 w-4 text-accent" />
-              <span className="font-heading text-xs font-semibold tracking-wide">
+              {/* <span className="font-heading text-xs font-semibold tracking-wide">
                 Chef&apos;s Special
-              </span>
+              </span> */}
             </div>
 
             {/* Centered food icon */}
-            <div className="absolute inset-0 flex items-center justify-center">
+            {/* <div className="absolute inset-0 flex items-center justify-center">
               <ChefHat className="h-24 w-24 fill-primary text-primary drop-shadow-lg sm:h-32 sm:w-32" />
-            </div>
+            </div> */}
           </motion.div>
 
           {/* Secondary thumbnail */}
