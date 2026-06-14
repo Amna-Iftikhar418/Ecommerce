@@ -43,10 +43,11 @@ export default function StorySection() {
           <ParallaxElement speed={0.6}>
             <div className="relative aspect-4/5 overflow-hidden rounded-3xl shadow-2xl">
               <Image
-                src="/green.jpg"
+                src="/green.webp"
                 alt="Inside the Bella Cucina kitchen"
                 fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                sizes="(max-width: 1024px) 100vw, 552px"
+                quality={70}
                 className="object-cover"
               />
               <FallingWords />

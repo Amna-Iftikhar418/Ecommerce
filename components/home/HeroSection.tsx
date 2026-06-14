@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { ChefHat, ChevronDown, Clock, Sparkles, Star } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
+import { ChevronDown, Sparkles } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import FadeUp from "@/components/motion/FadeUp";
@@ -11,11 +12,13 @@ import MagneticButton from "@/components/motion/MagneticButton";
 import ParallaxElement from "@/components/motion/ParallaxElement";
 
 type HeroItem = { name: string; image: string | null; rating: number } | null;
+type SecondaryImage = { name: string; image: string; rating: number };
 
 type HeroSectionProps = {
-  featuredItem: HeroItem;
-  secondaryItem: HeroItem;
+  secondaryItems: HeroItem[];
 };
+
+const SECONDARY_ROTATION_INTERVAL = 4000;
 
 const STATS = [
   { value: "10+", label: "Years of Tradition" },
@@ -23,7 +26,22 @@ const STATS = [
   { value: "25-35", label: "Min Delivery" },
 ];
 
-export default function HeroSection({ featuredItem, secondaryItem }: HeroSectionProps) {
+export default function HeroSection({ secondaryItems }: HeroSectionProps) {
+  const secondaryImages: SecondaryImage[] = secondaryItems.filter(
+    (item): item is SecondaryImage => !!item?.image
+  );
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (secondaryImages.length < 2) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % secondaryImages.length);
+    }, SECONDARY_ROTATION_INTERVAL);
+    return () => clearInterval(interval);
+  }, [secondaryImages.length]);
+
+  const activeSecondary = secondaryImages[activeIndex];
+
   return (
     <>
     <section className="relative min-h-screen overflow-hidden bg-primary text-primary-foreground">
@@ -48,11 +66,9 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
               Authentic Italian, made with love
             </p>
           </FadeUp>
-          <FadeUp delay={0.1}>
-            <h1 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight mb-6">
-              Bella <span className="text-accent">Cucina</span>
-            </h1>
-          </FadeUp>
+          <h1 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight mb-6">
+            Bella <span className="text-accent">Cucina</span>
+          </h1>
           <FadeUp delay={0.2}>
             <p className="max-w-md text-base sm:text-lg text-primary-foreground/80 mb-10 leading-relaxed">
               Handcrafted pasta, wood-fired pizza, and recipes passed down
@@ -101,7 +117,7 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
           />
 
           {/* Main image card */}
-          <motion.div
+          <m.div
             initial={{
               opacity: 0,
               x: -100,
@@ -123,14 +139,14 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
             viewport={{ once: true }}
             transition={{ duration: 1.2, ease: [0.21, 0.47, 0.32, 0.98], delay: 0.2 }}
             style={{ transformPerspective: 1200 }}
-            className="relative aspect-4/5 overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-primary-foreground/10"
+            className="relative aspect-4/5 overflow-hidden rounded-[2rem]"
           >
             <Image
-              src="/card.png"
+              src="/card.webp"
               alt=""
               fill
               priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              sizes="(max-width: 1024px) 384px, 448px"
               className="object-cover"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent" />
@@ -143,90 +159,67 @@ export default function HeroSection({ featuredItem, secondaryItem }: HeroSection
               </span> */}
             </div>
 
-            {/* Centered food icon */}
-            {/* <div className="absolute inset-0 flex items-center justify-center">
-              <ChefHat className="h-24 w-24 fill-primary text-primary drop-shadow-lg sm:h-32 sm:w-32" />
-            </div> */}
-          </motion.div>
+            {/* Scalloped wave edges */}
+            <svg
+              aria-hidden
+              viewBox="0 0 200 20"
+              preserveAspectRatio="none"
+              className="pointer-events-none absolute inset-x-0 top-0 h-10 w-full fill-primary"
+            >
+              <path d="M0,10 A10,10 0 0 1 20,10 A10,10 0 0 1 40,10 A10,10 0 0 1 60,10 A10,10 0 0 1 80,10 A10,10 0 0 1 100,10 A10,10 0 0 1 120,10 A10,10 0 0 1 140,10 A10,10 0 0 1 160,10 A10,10 0 0 1 180,10 A10,10 0 0 1 200,10 L200,0 L0,0 Z" />
+            </svg>
+            <svg
+              aria-hidden
+              viewBox="0 0 200 20"
+              preserveAspectRatio="none"
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-10 w-full fill-primary"
+            >
+              <path d="M0,10 A10,10 0 0 0 20,10 A10,10 0 0 0 40,10 A10,10 0 0 0 60,10 A10,10 0 0 0 80,10 A10,10 0 0 0 100,10 A10,10 0 0 0 120,10 A10,10 0 0 0 140,10 A10,10 0 0 0 160,10 A10,10 0 0 0 180,10 A10,10 0 0 0 200,10 L200,20 L0,20 Z" />
+            </svg>
+            <svg
+              aria-hidden
+              viewBox="0 0 20 200"
+              preserveAspectRatio="none"
+              className="pointer-events-none absolute inset-y-0 left-0 h-full w-10 fill-primary"
+            >
+              <path d="M10,0 A10,10 0 0 0 10,20 A10,10 0 0 0 10,40 A10,10 0 0 0 10,60 A10,10 0 0 0 10,80 A10,10 0 0 0 10,100 A10,10 0 0 0 10,120 A10,10 0 0 0 10,140 A10,10 0 0 0 10,160 A10,10 0 0 0 10,180 A10,10 0 0 0 10,200 L0,200 L0,0 Z" />
+            </svg>
+            <svg
+              aria-hidden
+              viewBox="0 0 20 200"
+              preserveAspectRatio="none"
+              className="pointer-events-none absolute inset-y-0 right-0 h-full w-10 fill-primary"
+            >
+              <path d="M10,0 A10,10 0 0 1 10,20 A10,10 0 0 1 10,40 A10,10 0 0 1 10,60 A10,10 0 0 1 10,80 A10,10 0 0 1 10,100 A10,10 0 0 1 10,120 A10,10 0 0 1 10,140 A10,10 0 0 1 10,160 A10,10 0 0 1 10,180 A10,10 0 0 1 10,200 L20,200 L20,0 Z" />
+            </svg>
+          </m.div>
 
-          {/* Secondary thumbnail */}
-          {secondaryItem?.image && (
+          {/* Secondary thumbnail - rotates through featured dishes */}
+          {activeSecondary && (
             <FadeUp
               delay={0.35}
               className="absolute -top-6 -left-3 hidden sm:block sm:-left-8"
             >
               <div className="relative h-20 w-20 -rotate-6 overflow-hidden rounded-2xl shadow-xl ring-4 ring-primary sm:h-28 sm:w-28">
-                <Image
-                  src={secondaryItem.image}
-                  alt={secondaryItem.name}
-                  fill
-                  sizes="112px"
-                  className="object-cover"
-                />
+                <AnimatePresence mode="wait">
+                  <m.div
+                    key={activeSecondary.image}
+                    initial={{ opacity: 0, scale: 1.08 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.7, ease: "easeInOut" }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={activeSecondary.image}
+                      alt={activeSecondary.name}
+                      fill
+                      sizes="112px"
+                      className="object-cover"
+                    />
+                  </m.div>
+                </AnimatePresence>
               </div>
-            </FadeUp>
-          )}
-
-          {/* Delivery badge */}
-          <FadeUp delay={0.6} className="absolute -top-4 -right-2 z-10 sm:-right-4">
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="flex items-center gap-2.5 rounded-2xl border border-border/60 bg-card/85 px-3.5 py-2.5 text-card-foreground shadow-2xl shadow-primary/15 backdrop-blur-xl sm:px-4 sm:py-3"
-            >
-              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-accent/70 text-accent-foreground shadow-md shadow-accent/40">
-                <Clock className="h-4 w-4" />
-                <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-card" />
-                </span>
-              </div>
-              <div>
-                <p className="font-heading font-bold text-sm leading-none">
-                  25-35 min
-                </p>
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  Avg. Delivery
-                </p>
-              </div>
-            </motion.div>
-          </FadeUp>
-
-          {/* Rating badge */}
-          {featuredItem && (
-            <FadeUp delay={0.5} className="absolute -bottom-4 -left-3 z-10 sm:-left-8">
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-                className="flex items-center gap-2.5 rounded-2xl border border-border/60 bg-card/85 px-4 py-3 text-card-foreground shadow-2xl shadow-primary/15 backdrop-blur-xl"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-accent/70 text-accent-foreground shadow-md shadow-accent/40">
-                  <Star className="h-4 w-4 fill-current" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <p className="font-heading font-bold text-sm leading-none">
-                      {featuredItem.rating.toFixed(1)}
-                    </p>
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={cn(
-                            "h-3 w-3",
-                            i < Math.round(featuredItem.rating)
-                              ? "fill-accent text-accent"
-                              : "fill-muted text-muted"
-                          )}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="mt-1.5 max-w-[140px] truncate text-xs text-muted-foreground">
-                    {featuredItem.name}
-                  </p>
-                </div>
-              </motion.div>
             </FadeUp>
           )}
         </div>

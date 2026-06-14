@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { m, useMotionValue, useSpring } from "framer-motion";
 import type { ReactNode, MouseEvent } from "react";
 import { cn } from "@/lib/utils";
 
@@ -35,13 +35,13 @@ export default function MagneticButton({
   }
 
   return (
-    <motion.div
+    <m.div
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ x: springX, y: springY }}
       className={cn("inline-block", className)}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

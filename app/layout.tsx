@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Fraunces } from "next/font/google";
+import { preconnect } from "react-dom";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
 import { clerkAppearance } from "@/lib/clerkAppearance";
+import MotionProvider from "@/components/motion/MotionProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -53,11 +55,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Clerk pings this origin for anonymous telemetry shortly after load;
+  // preconnecting avoids a late DNS/TLS handshake on the critical path.
+  preconnect("https://clerk-telemetry.com", { crossOrigin: "anonymous" });
+
   return (
-    <ClerkProvider appearance={clerkAppearance}>
+    <ClerkProvider appearance={clerkAppearance} prefetchUI={false}>
       <html lang="en" className={`${geistSans.variable} ${fraunces.variable} h-full antialiased`}>
         <body className="min-h-full flex flex-col">
-          {children}
+          <MotionProvider>{children}</MotionProvider>
           <Toaster richColors />
         </body>
       </html>

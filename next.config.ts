@@ -7,9 +7,11 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
+    qualities: [65, 70, 75],
   },
   experimental: {
     imgOptTimeoutInSeconds: 30,
+    inlineCss: true,
   },
 };
 

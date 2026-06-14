@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { m, type Variants } from "framer-motion";
 import type { ReactNode } from "react";
 
 const containerVariants: Variants = {
@@ -28,7 +28,7 @@ type StaggerContainerProps = {
 
 export function StaggerContainer({ children, className }: StaggerContainerProps) {
   return (
-    <motion.div
+    <m.div
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
@@ -36,7 +36,7 @@ export function StaggerContainer({ children, className }: StaggerContainerProps)
       className={className}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -47,8 +47,8 @@ type StaggerItemProps = {
 
 export function StaggerItem({ children, className }: StaggerItemProps) {
   return (
-    <motion.div variants={itemVariants} className={className}>
+    <m.div variants={itemVariants} className={className}>
       {children}
-    </motion.div>
+    </m.div>
   );
 }

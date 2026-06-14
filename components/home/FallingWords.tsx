@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 const ITEMS = [
   { word: "Bella", left: "2%", delay: 0, duration: 16 },
@@ -16,7 +16,7 @@ export default function FallingWords() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
       {ITEMS.map((item, i) => (
-        <motion.span
+        <m.span
           key={i}
           className="absolute font-heading text-2xl font-bold italic text-white/25 drop-shadow-md sm:text-4xl"
           style={{ left: item.left }}
@@ -30,7 +30,7 @@ export default function FallingWords() {
           }}
         >
           {item.word}
-        </motion.span>
+        </m.span>
       ))}
     </div>
   );

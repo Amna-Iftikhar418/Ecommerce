@@ -17,6 +17,10 @@ export const metadata: Metadata = {
     "Order handcrafted Italian dishes online from Bella Cucina. Fresh pasta, wood-fired pizza, and more — delivered to your door in under 35 minutes.",
 };
 
+// Pre-render the homepage and revalidate every 5 minutes, so the document
+// is served instantly from cache instead of waiting on DB queries per request.
+export const revalidate = 300;
+
 export default async function HomePage() {
   const [categories, featured, settings] = await Promise.all([
     db.category.findMany({ orderBy: { order: "asc" } }),
@@ -36,28 +40,15 @@ export default async function HomePage() {
   };
 
   const heroItem = featured[0] ?? null;
-  const heroSecondaryItem = featured[8] ?? null;
+  const secondaryItems = featured
+    .filter((item) => item.id !== heroItem?.id)
+    .map((item) => ({ name: item.name, image: item.image, rating: item.rating }));
   const gridItems = featured.slice(2, 8);
 
   return (
     <>
       <Navbar pricing={pricing} />
-      <HeroSection
-        featuredItem={
-          heroItem
-            ? { name: heroItem.name, image: heroItem.image, rating: heroItem.rating }
-            : null
-        }
-        secondaryItem={
-          heroSecondaryItem
-            ? {
-                name: heroSecondaryItem.name,
-                image: heroSecondaryItem.image,
-                rating: heroSecondaryItem.rating,
-              }
-            : null
-        }
-      />
+      <HeroSection secondaryItems={secondaryItems} />
       <FeaturedDishesSection
         items={gridItems.map((item) => ({
           id: item.id,
