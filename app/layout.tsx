@@ -60,7 +60,7 @@ export default function RootLayout({
   preconnect("https://clerk-telemetry.com", { crossOrigin: "anonymous" });
 
   return (
-    <ClerkProvider appearance={clerkAppearance} prefetchUI={false}>
+    <ClerkProvider appearance={clerkAppearance}>
       <html lang="en" className={`${geistSans.variable} ${fraunces.variable} h-full antialiased`}>
         <body className="min-h-full flex flex-col">
           <MotionProvider>{children}</MotionProvider>

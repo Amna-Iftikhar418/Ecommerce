@@ -41,9 +41,9 @@ export default async function AdminLayout({
           </Link>
         </div>
       </aside>
-      <div className="flex-1 min-h-screen overflow-auto bg-background">
+      <main className="flex-1 min-h-screen overflow-auto bg-background">
         {children}
-      </div>
+      </main>
     </div>
   );
 }

@@ -41,7 +41,7 @@ export default function WhyChooseUsSection() {
     <section className="py-24 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 text-center">
-          <p className="font-heading italic text-lg text-accent mb-2">
+          <p className="font-heading italic text-lg text-accent-strong mb-2">
             Why Bella Cucina
           </p>
           <h2 className="font-heading text-4xl sm:text-5xl font-bold">

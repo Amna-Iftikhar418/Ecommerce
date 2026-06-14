@@ -11,7 +11,7 @@ export default function StorySection() {
       <div className="container mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
         <FadeUp>
           <div>
-            <p className="font-heading italic text-lg text-accent mb-2">
+            <p className="font-heading italic text-lg text-accent-strong mb-2">
               Since 2012
             </p>
             <h2 className="font-heading text-4xl sm:text-5xl font-bold mb-6">

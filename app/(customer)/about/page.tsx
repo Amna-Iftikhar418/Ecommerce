@@ -53,7 +53,7 @@ export default function AboutPage() {
 
       {/* Story */}
       <section className="container mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
-        <p className="font-heading italic text-lg text-accent mb-2">
+        <p className="font-heading italic text-lg text-accent-strong mb-2">
           From Naples, with love
         </p>
         <h2 className="font-heading text-3xl font-bold mb-6 sm:text-4xl">
@@ -88,7 +88,7 @@ export default function AboutPage() {
       <section className="bg-secondary/40 px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
         <div className="container mx-auto max-w-6xl">
           <div className="mb-12 text-center">
-            <p className="font-heading italic text-lg text-accent mb-2">
+            <p className="font-heading italic text-lg text-accent-strong mb-2">
               Our Promise
             </p>
             <h2 className="font-heading text-3xl font-bold sm:text-4xl">

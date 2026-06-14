@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { UtensilsCrossed, Menu } from "lucide-react";
 import { UserButton, SignInButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
@@ -22,10 +21,15 @@ const NAV_LINKS = [
   { href: "/orders", label: "My Orders" },
 ];
 
-export default function Navbar({ pricing }: { pricing: PricingSettings }) {
+export default function Navbar({
+  pricing,
+  isHome = false,
+}: {
+  pricing: PricingSettings;
+  isHome?: boolean;
+}) {
   const { isSignedIn, user } = useUser();
   const isAdmin = user?.publicMetadata?.role === "ADMIN";
-  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -38,7 +42,6 @@ export default function Navbar({ pricing }: { pricing: PricingSettings }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isHome = pathname === "/";
   const transparent = isHome && !scrolled;
 
   const navLinks = isAdmin

@@ -47,7 +47,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Navbar pricing={pricing} />
+      <Navbar pricing={pricing} isHome />
       <HeroSection secondaryItems={secondaryItems} />
       <FeaturedDishesSection
         items={gridItems.map((item) => ({

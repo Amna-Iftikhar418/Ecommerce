@@ -66,7 +66,7 @@ export default function TestimonialsSection() {
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <FadeUp>
             <div>
-              <p className="font-heading italic text-lg text-accent mb-2">
+              <p className="font-heading italic text-lg text-accent-strong mb-2">
                 Loved by our guests
               </p>
               <h2 className="font-heading text-4xl sm:text-5xl font-bold">

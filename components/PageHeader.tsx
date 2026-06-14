@@ -34,7 +34,7 @@ export default function PageHeader({
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             {eyebrow && (
-              <p className="font-heading italic text-lg text-accent mb-2">
+              <p className="font-heading italic text-lg text-accent-strong mb-2">
                 {eyebrow}
               </p>
             )}
