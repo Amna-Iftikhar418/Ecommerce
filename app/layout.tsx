@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
 import { clerkAppearance } from "@/lib/clerkAppearance";
 import MotionProvider from "@/components/motion/MotionProvider";
+import OrderNotifier from "@/components/admin/OrderNotifier";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -64,6 +65,7 @@ export default function RootLayout({
       <html lang="en" className={`${geistSans.variable} ${fraunces.variable} h-full antialiased`}>
         <body className="min-h-full flex flex-col">
           <MotionProvider>{children}</MotionProvider>
+          <OrderNotifier />
           <Toaster richColors />
         </body>
       </html>

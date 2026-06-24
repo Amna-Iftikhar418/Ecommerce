@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Trash2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DataTable from "@/components/admin/DataTable";
+import ConfirmDialog from "@/components/admin/ConfirmDialog";
 
 type Customer = {
   id: string;
@@ -23,18 +24,9 @@ export default function CustomersClient({
 }) {
   const [items, setItems] = useState(customers);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Customer | null>(null);
 
   async function handleDelete(customer: Customer) {
-    const message =
-      customer.orderCount > 0
-        ? `Remove ${customer.name ?? customer.email}? Their ${customer.orderCount} delivered/cancelled order${
-            customer.orderCount !== 1 ? "s" : ""
-          } will also be deleted. This cannot be undone.`
-        : `Remove ${customer.name ?? customer.email}? This cannot be undone.`;
-
-    if (!window.confirm(message)) {
-      return;
-    }
     setDeleting(customer.id);
     try {
       const res = await fetch(`/api/admin/customers/${customer.id}`, {
@@ -130,7 +122,7 @@ export default function CustomersClient({
             variant="ghost"
             size="sm"
             disabled={deleting === customer.id || customer.hasActiveOrders}
-            onClick={() => handleDelete(customer)}
+            onClick={() => setDeleteTarget(customer)}
             title={
               customer.hasActiveOrders
                 ? "Cannot delete: customer has an active order"
@@ -146,5 +138,26 @@ export default function CustomersClient({
     },
   ];
 
-  return <DataTable columns={columns} data={items} />;
+  return (
+    <>
+      <DataTable columns={columns} data={items} />
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title={`Remove ${deleteTarget?.name ?? deleteTarget?.email}?`}
+        description={
+          deleteTarget && deleteTarget.orderCount > 0
+            ? `Their ${deleteTarget.orderCount} delivered/cancelled order${
+                deleteTarget.orderCount !== 1 ? "s" : ""
+              } will also be deleted. This cannot be undone.`
+            : "This cannot be undone."
+        }
+        confirmLabel="Remove"
+        onConfirm={() => {
+          if (deleteTarget) handleDelete(deleteTarget);
+        }}
+      />
+    </>
+  );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { UtensilsCrossed } from "lucide-react";
 import { SignIn } from "@clerk/nextjs";
 import FadeUp from "@/components/motion/FadeUp";
+import { clerkAppearance } from "@/lib/clerkAppearance";
 
 export default function SignInPage() {
   return (
@@ -18,7 +19,21 @@ export default function SignInPage() {
           Bella Cucina
         </Link>
         <p className="mb-6 font-heading italic text-accent">Welcome back</p>
-        <SignIn />
+        <SignIn
+          appearance={{
+            ...clerkAppearance,
+            elements: {
+              ...clerkAppearance.elements,
+              formFieldAction__forgotPassword: "!hidden",
+            },
+          }}
+        />
+        <Link
+          href="/forgot-password"
+          className="mt-4 text-sm font-medium text-accent hover:text-accent/80"
+        >
+          Forgot password?
+        </Link>
         <p className="mt-6 text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link href="/sign-up" className="font-medium text-accent hover:text-accent/80">

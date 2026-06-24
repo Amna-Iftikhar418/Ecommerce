@@ -6,6 +6,7 @@ import { CreditCard, Banknote, ChevronDown, Loader2, Trash2, Eraser } from "luci
 import { cn } from "@/lib/utils";
 import OrderStatusBadge from "@/components/orders/OrderStatusBadge";
 import DataTable from "@/components/admin/DataTable";
+import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -56,6 +57,8 @@ export default function OrdersClient({
   const [filter, setFilter] = useState<OrderStatus | "ALL">("ALL");
   const [updating, setUpdating] = useState<string | null>(null);
   const [cleaning, setCleaning] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<AdminOrder | null>(null);
+  const [cleanConfirmOpen, setCleanConfirmOpen] = useState(false);
 
   const removableCount = orders.filter(
     (o) => o.status === "DELIVERED" || o.status === "CANCELLED"
@@ -85,13 +88,6 @@ export default function OrdersClient({
   }
 
   async function deleteOrder(order: AdminOrder) {
-    if (
-      !window.confirm(
-        `Delete order #${order.id.slice(-8).toUpperCase()}? This cannot be undone.`
-      )
-    ) {
-      return;
-    }
     setUpdating(order.id);
     try {
       const res = await fetch(`/api/admin/orders/${order.id}`, {
@@ -113,15 +109,6 @@ export default function OrdersClient({
   async function cleanOrders() {
     if (removableCount === 0) {
       toast.info("No delivered or cancelled orders to remove");
-      return;
-    }
-    if (
-      !window.confirm(
-        `Remove ${removableCount} delivered/cancelled order${
-          removableCount !== 1 ? "s" : ""
-        }? This cannot be undone.`
-      )
-    ) {
       return;
     }
     setCleaning(true);
@@ -278,7 +265,7 @@ export default function OrdersClient({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   variant="destructive"
-                  onClick={() => deleteOrder(order)}
+                  onClick={() => setDeleteTarget(order)}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   Delete Order
@@ -319,7 +306,13 @@ export default function OrdersClient({
         </div>
 
         <button
-          onClick={cleanOrders}
+          onClick={() => {
+            if (removableCount === 0) {
+              toast.info("No delivered or cancelled orders to remove");
+              return;
+            }
+            setCleanConfirmOpen(true);
+          }}
           disabled={cleaning || removableCount === 0}
           className={cn(
             buttonVariants({ variant: "outline", size: "sm" }),
@@ -344,6 +337,27 @@ export default function OrdersClient({
         columns={columns}
         data={displayed}
         emptyMessage="No orders found."
+      />
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title={`Delete order #${deleteTarget?.id.slice(-8).toUpperCase()}?`}
+        description="This cannot be undone."
+        onConfirm={() => {
+          if (deleteTarget) deleteOrder(deleteTarget);
+        }}
+      />
+
+      <ConfirmDialog
+        open={cleanConfirmOpen}
+        onOpenChange={setCleanConfirmOpen}
+        title={`Remove ${removableCount} delivered/cancelled order${
+          removableCount !== 1 ? "s" : ""
+        }?`}
+        description="This cannot be undone."
+        confirmLabel="Remove"
+        onConfirm={cleanOrders}
       />
     </div>
   );

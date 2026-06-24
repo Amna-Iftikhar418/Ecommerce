@@ -36,6 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DataTable from "@/components/admin/DataTable";
+import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import { cn } from "@/lib/utils";
 
 type Category = { id: string; name: string };
@@ -92,6 +93,7 @@ export default function MenuClient({
   const [form, setForm] = useState<FormState>(BLANK);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<MenuItem | null>(null);
 
   function openAdd() {
     setEditing(null);
@@ -192,9 +194,6 @@ export default function MenuClient({
   }
 
   async function handleDelete(item: MenuItem) {
-    if (!window.confirm(`Delete "${item.name}"? This cannot be undone.`)) {
-      return;
-    }
     try {
       const res = await fetch(`/api/admin/menu/${item.id}`, {
         method: "DELETE",
@@ -299,7 +298,7 @@ export default function MenuClient({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => handleDelete(item)}
+            onClick={() => setDeleteTarget(item)}
             className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -542,6 +541,16 @@ export default function MenuClient({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title={`Delete "${deleteTarget?.name}"?`}
+        description="This will permanently remove the item from your menu. This cannot be undone."
+        onConfirm={() => {
+          if (deleteTarget) handleDelete(deleteTarget);
+        }}
+      />
     </>
   );
 }
