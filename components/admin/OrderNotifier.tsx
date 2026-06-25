@@ -31,7 +31,6 @@ export default function OrderNotifier() {
     }
 
     let cancelled = false;
-    let interval: ReturnType<typeof setInterval>;
 
     async function poll() {
       try {
@@ -76,7 +75,7 @@ export default function OrderNotifier() {
       }
     }
 
-    interval = setInterval(poll, POLL_INTERVAL_MS);
+    const interval = setInterval(poll, POLL_INTERVAL_MS);
     poll();
 
     return () => {
