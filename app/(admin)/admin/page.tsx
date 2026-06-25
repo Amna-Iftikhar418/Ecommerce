@@ -53,12 +53,14 @@ export default async function AdminDashboardPage() {
       value: totalOrders,
       Icon: Package,
       color: "bg-primary/10 text-primary",
+      href: "/admin/orders",
     },
     {
       label: "Total Revenue",
       value: `$${revenue.toFixed(2)}`,
       Icon: DollarSign,
       color: "bg-accent/15 text-accent",
+      href: "/admin/orders",
     },
     {
       label: "Active Orders",
@@ -66,18 +68,21 @@ export default async function AdminDashboardPage() {
       Icon: Clock,
       color: "bg-accent/15 text-accent",
       live: activeCount > 0,
+      href: "/admin/orders",
     },
     {
       label: "Menu Items",
       value: menuItemCount,
       Icon: UtensilsCrossed,
       color: "bg-primary/10 text-primary",
+      href: "/admin/menu",
     },
     {
       label: "Customers",
       value: customerCount,
       Icon: Users,
       color: "bg-primary/10 text-primary",
+      href: "/admin/customers",
     },
   ];
 
@@ -96,9 +101,12 @@ export default async function AdminDashboardPage() {
       </FadeUp>
 
       <StaggerContainer className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-5">
-        {stats.map(({ label, value, Icon, color, live }) => (
+        {stats.map(({ label, value, Icon, color, live, href }) => (
           <StaggerItem key={label}>
-            <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
+            <Link
+              href={href}
+              className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md"
+            >
               <div
                 className={`mb-4 flex h-11 w-11 items-center justify-center rounded-xl ${color}`}
               >
@@ -112,7 +120,7 @@ export default async function AdminDashboardPage() {
               )}
               <p className="font-heading text-3xl font-bold">{value}</p>
               <p className="mt-1 text-sm text-muted-foreground">{label}</p>
-            </div>
+            </Link>
           </StaggerItem>
         ))}
       </StaggerContainer>
