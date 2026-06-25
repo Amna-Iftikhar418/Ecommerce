@@ -65,7 +65,7 @@ export const clerkAppearance = {
     scrollBox: "!bg-card !rounded-3xl",
     pageScrollBox: "!bg-card",
     page: "!bg-card",
-    navbar: "!bg-muted/50 !border-r !border-border rounded-l-3xl",
+    navbar: "!w-56 !shrink-0 !bg-muted/50 !border-r !border-border !rounded-l-3xl",
     navbarButtons: "gap-1",
     navbarButton:
       "!text-muted-foreground !font-medium !rounded-xl transition-colors hover:!bg-card hover:!text-foreground",
