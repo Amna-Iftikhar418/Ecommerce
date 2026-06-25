@@ -139,8 +139,37 @@
 .cl-footer,
 .cl-footerAction,
 .cl-footerPages,
+.cl-footerItem,
 .cl-userButtonPopoverFooter {
   display: none !important;
+}
+
+/* Highlight the active tab in Clerk's UserProfile sidebar nav (Profile,
+   Security, etc) — confirmed via rendered DOM that Clerk marks the active
+   navbarButton with a plain `cl-active` class, not a data-attribute. */
+.cl-navbarButton.cl-active {
+  background-color: var(--card) !important;
+  color: var(--accent-strong) !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* The UserProfile sidebar's "Account"/"Security" page title and its
+   subtitle aren't exposed as a themable element in appearance.elements
+   (Clerk renders them with no cl-* descriptor, only a build-hashed
+   class) — targeted structurally via the stable .cl-navbar ancestor. */
+.cl-navbar h1 {
+  font-family: var(--font-fraunces) !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: var(--foreground) !important;
+}
+
+.cl-navbar p {
+  color: var(--muted-foreground) !important;
+}
+
+.cl-modalBackdrop {
+  z-index: 100;
 }
 
 @keyframes border-beam-spin {
